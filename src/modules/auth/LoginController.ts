@@ -31,7 +31,7 @@ class LoginController {
     }
 
     try {
-      const { email } = req.body;
+      const { email, password } = req.body;
 
       if (!email) {
         return next(
@@ -48,7 +48,32 @@ class LoginController {
         );
       }
 
+      if (!password) {
+        return next(
+          new ApiError(StringValues.PASSWORD_REQUIRED, StatusCodes.BAD_REQUEST)
+        );
+      }
+
+      if (password.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (password.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MAX_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
       const _email = email?.toLowerCase().trim();
+      const _password = password?.trim();
 
       const user = await User.findOne({ email: _email });
 
@@ -123,7 +148,7 @@ class LoginController {
     }
 
     try {
-      const { email, otp } = req.body;
+      const { email, password } = req.body;
 
       if (!email) {
         return next(
@@ -140,40 +165,32 @@ class LoginController {
         );
       }
 
-      if (!otp) {
+      if (!password) {
         return next(
-          new ApiError(StringValues.OTP_REQUIRED, StatusCodes.BAD_REQUEST)
+          new ApiError(StringValues.PASSWORD_REQUIRED, StatusCodes.BAD_REQUEST)
         );
       }
 
-      if (otp.length !== 6) {
+      if (password.length < 8) {
         return next(
-          new ApiError(StringValues.INVALID_OTP, StatusCodes.BAD_REQUEST)
+          new ApiError(
+            StringValues.PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (password.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MAX_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
         );
       }
 
       const _email = email?.toLowerCase().trim();
-      const _otp = otp?.trim();
-
-      const otpObj = await Otp.findOne({ otp: _otp });
-
-      if (!otpObj) {
-        return next(
-          new ApiError(StringValues.INCORRECT_OTP, StatusCodes.BAD_REQUEST)
-        );
-      }
-
-      if (await otpObj.isExpired()) {
-        return next(
-          new ApiError(StringValues.OTP_EXPIRED, StatusCodes.BAD_REQUEST)
-        );
-      }
-
-      if (await otpObj.isAleadyUsed()) {
-        return next(
-          new ApiError(StringValues.OTP_ALREADY_USED, StatusCodes.BAD_REQUEST)
-        );
-      }
+      const _password = password?.trim();
 
       const user = await User.findOne({ email: _email });
 
@@ -186,9 +203,11 @@ class LoginController {
         );
       }
 
-      if (otpObj.email !== user.email) {
+      const isPasswordMatched = await user.matchPassword(_password);
+
+      if (!isPasswordMatched) {
         return next(
-          new ApiError(StringValues.INCORRECT_OTP, StatusCodes.BAD_REQUEST)
+          new ApiError(StringValues.INCORRECT_PASSWORD, StatusCodes.BAD_REQUEST)
         );
       }
 

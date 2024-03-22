@@ -113,10 +113,46 @@ class RegisterController {
         );
       }
 
+      if (password.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (password.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MAX_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
       if (!confirmPassword) {
         return next(
           new ApiError(
             StringValues.CONFIRM_PASSWORD_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (confirmPassword.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.CONFIRM_PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (confirmPassword.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.CONFIRM_PASSWORD_MAX_LENGTH_ERROR,
             StatusCodes.BAD_REQUEST
           )
         );
@@ -182,7 +218,6 @@ class RegisterController {
       return res.json({
         success: true,
         message: StringValues.SUCCESS,
-        otp: newOtp.otp,
       });
     } catch (error: any) {
       const errorMessage =
@@ -301,10 +336,46 @@ class RegisterController {
         );
       }
 
+      if (password.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (password.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MAX_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
       if (!confirmPassword) {
         return next(
           new ApiError(
             StringValues.CONFIRM_PASSWORD_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (confirmPassword.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.CONFIRM_PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (confirmPassword.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.CONFIRM_PASSWORD_MAX_LENGTH_ERROR,
             StatusCodes.BAD_REQUEST
           )
         );

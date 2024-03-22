@@ -92,6 +92,17 @@ class StringValues {
   public static CONFIRM_PASSWORD_REQUIRED = "Confirm password is required";
   public static PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
   public static PHONE_ALREADY_USED = "Phone number is already used";
+  public static PASSWORD_MIN_LENGTH_ERROR =
+    "Password length should be greater than or equal to 8 characters";
+  public static PASSWORD_MAX_LENGTH_ERROR =
+    "Password length should not be greater than 32 characters";
+  public static CONFIRM_PASSWORD_MIN_LENGTH_ERROR =
+    "Confirm password length should be greater than or equal to 8 characters";
+  public static CONFIRM_PASSWORD_MAX_LENGTH_ERROR =
+    "Confirm password length should not be greater than 32 characters";
+  public static PHONE_LENGTH_ERROR =
+    "Phone number length should be equal to 10 characters";
+  public static INCORRECT_PASSWORD = "Password is incorrect";
 }
 
 export default StringValues;

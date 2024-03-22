@@ -1,19 +1,35 @@
 /**
- * Define Job Router
+ * Define Auth Router
  */
 
 import { Router } from "express";
-// import AuthMiddleware from "../middlewares/Auth";
-// import JobController from "./JobController";
+import RegisterController from "./RegisterController";
+import LoginController from "./LoginController";
 
 const AuthRouter: Router = Router();
 
 /**
- * @name createJob
- * @description Perform create job.
- * @route GET /api/v1/job/create
- * @access Private
+ * @name RegisterController.sendRegisterOtp
+ * @description Send OTP for registration.
+ * @route POST /api/v1/auth/send-register-otp
+ * @access Public
  */
-// JobRouter.route("/create").all(JobController.createJob);
+AuthRouter.route("/send-register-otp").all(RegisterController.sendRegisterOtp);
+
+/**
+ * @name RegisterController.register
+ * @description Create a new account.
+ * @route POST /api/v1/auth/register
+ * @access Public
+ */
+AuthRouter.route("/register").all(RegisterController.register);
+
+/**
+ * @name LoginController.login
+ * @description Create a new account.
+ * @route POST /api/v1/auth/login
+ * @access Public
+ */
+AuthRouter.route("/login").all(LoginController.login);
 
 export default AuthRouter;

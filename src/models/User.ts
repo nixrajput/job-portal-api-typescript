@@ -49,9 +49,9 @@ const UserSchema = new Schema<IUserModel>(
       type: String,
       validate: {
         validator: function (v: string) {
-          return v.length <= 10;
+          return v.length === 10;
         },
-        msg: "Phone length should not be greater than 10 characters",
+        msg: "Phone number length should be equal to 10 characters",
       },
     },
 
@@ -68,9 +68,9 @@ const UserSchema = new Schema<IUserModel>(
       type: String,
       validate: {
         validator: function (v: string) {
-          return v.length <= 10;
+          return v.length === 10;
         },
-        msg: "Phone length should not be greater than 10 characters",
+        msg: "Phone number length should be equal to 10 characters",
       },
     },
 
@@ -79,15 +79,15 @@ const UserSchema = new Schema<IUserModel>(
       validate: [
         {
           validator: function (v: string) {
-            return v.length <= 32;
+            return v.length >= 8;
           },
-          msg: "Password length should not be greater than 32 characters",
+          msg: "Password length should be greater than or equal to 8 characters",
         },
         {
           validator: function (v: string) {
-            return v.length >= 8;
+            return v.length <= 32;
           },
-          msg: "Password length should be greater than 8 characters",
+          msg: "Password length should not be greater than 32 characters",
         },
       ],
     },
@@ -152,7 +152,7 @@ UserSchema.methods.generateToken = async function (): Promise<IAuthTokenModel> {
 
   const authToken = await AuthToken.create({
     token: token,
-    user: this._id,
+    userId: this._id,
     expiresAt: decodedData.exp,
   });
 
@@ -171,7 +171,7 @@ UserSchema.methods.generateToken = async function (): Promise<IAuthTokenModel> {
  * @returns Promise<IAuthTokenModel>
  */
 UserSchema.methods.getToken = async function (): Promise<IAuthTokenModel> {
-  const authToken = await AuthToken.findOne({ user: this._id });
+  const authToken = await AuthToken.findOne({ userId: this._id });
 
   if (!authToken) {
     const newToken = await this.generateToken();
@@ -183,7 +183,7 @@ UserSchema.methods.getToken = async function (): Promise<IAuthTokenModel> {
   );
 
   if (isExpired) {
-    await AuthToken.deleteOne({ user: this._id });
+    await AuthToken.deleteOne({ userId: this._id });
 
     const newToken = await this.generateToken();
     return newToken;

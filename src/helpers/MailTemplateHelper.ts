@@ -2,7 +2,7 @@ import Logger from "../logger";
 import fs from "fs";
 import path from "path";
 
-const filePath = path.join(__dirname, "otpEmail.html");
+const filePath = path.join(__dirname, "../emails/", "otp-email.html");
 
 class EmailTemplateHelper {
   public static async getOtpEmail(otp: string, name?: string): Promise<string> {
