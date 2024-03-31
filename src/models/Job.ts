@@ -1,9 +1,9 @@
 import { Schema, model, Types } from "mongoose";
-import IJobModel from "../interfaces/db/Job";
+import IJobModel, { JobType } from "../interfaces/db/Job";
 
 const JobSchema = new Schema<IJobModel>(
   {
-    userId: {
+    recruiterId: {
       type: Types.ObjectId,
       required: true,
     },
@@ -19,59 +19,139 @@ const JobSchema = new Schema<IJobModel>(
       },
     },
 
-    description: {
-      type: String,
-      validate: {
-        validator: function (v: string) {
-          return v.split(" ").filter((ele) => ele != "").length <= 1000;
-        },
-        msg: "Job description should not be greater than 1000 words",
+    mandatorySkills: {
+      type: [String],
+      required: true,
+      default: [],
+    },
+
+    optionalSkills: {
+      type: [String],
+      default: [],
+    },
+
+    salary: {
+      minSalary: {
+        type: Number,
+        required: true,
+        min: 0,
+        validate: [
+          {
+            validator: Number.isInteger,
+            msg: "Minimum salary should be an integer",
+          },
+          {
+            validator: function (value: number) {
+              return value > 0;
+            },
+            msg: "Minimum salary should be greater than 0",
+          },
+        ],
+      },
+
+      maxSalary: {
+        type: Number,
+        required: true,
+        min: 0,
+        validate: [
+          {
+            validator: Number.isInteger,
+            msg: "Maximum salary should be an integer",
+          },
+          {
+            validator: function (value: number) {
+              return value > 0;
+            },
+            msg: "Maximum salary should be greater than 0",
+          },
+        ],
       },
     },
 
-    openings: {
+    currency: {
+      symbol: {
+        type: String,
+        default: "₹",
+      },
+      code: {
+        type: String,
+        default: "INR",
+      },
+    },
+
+    hasProbationPeriod: {
+      type: Boolean,
+      default: false,
+    },
+
+    probationDuration: {
       type: Number,
+      min: 0,
+      max: 6,
       validate: [
         {
           validator: Number.isInteger,
-          msg: "No. of vacancies should be an integer",
+          msg: "Probation duration should be an integer",
         },
         {
           validator: function (value: number) {
             return value > 0;
           },
-          msg: "No. of vacancies should be greater than 0",
+          msg: "Probation duration should be greater than 0",
+        },
+        {
+          validator: function (value: number) {
+            return value <= 6;
+          },
+          msg: "Probation duration should be less or equal to 6",
         },
       ],
     },
 
-    experienceRequired: {
-      type: String,
-      maxlength: 100,
+    probationSalary: {
+      minSalary: {
+        type: Number,
+        min: 0,
+        validate: [
+          {
+            validator: Number.isInteger,
+            msg: "Minimum probation salary should be an integer",
+          },
+          {
+            validator: function (value: number) {
+              return value > 0;
+            },
+            msg: "Minimum probation salary should be greater than 0",
+          },
+        ],
+      },
+
+      maxSalary: {
+        type: Number,
+        min: 0,
+        validate: [
+          {
+            validator: Number.isInteger,
+            msg: "Maximum probation salary should be an integer",
+          },
+          {
+            validator: function (value: number) {
+              return value > 0;
+            },
+            msg: "Maximum probation salary should be greater than 0",
+          },
+        ],
+      },
     },
 
-    category: {
+    jobType: {
       type: String,
-      maxlength: 100,
-    },
-
-    industryType: {
-      type: String,
-      maxlength: 100,
+      required: true,
+      enum: JobType,
     },
 
     location: {
-      address: {
-        type: String,
-        maxlength: 100,
-      },
-
       city: {
-        type: String,
-        maxlength: 100,
-      },
-
-      district: {
         type: String,
         maxlength: 100,
       },
@@ -81,54 +161,107 @@ const JobSchema = new Schema<IJobModel>(
         maxlength: 100,
       },
 
-      pincode: {
+      country: {
         type: String,
         maxlength: 100,
       },
     },
 
-    // duration: {
-    //   type: Number,
-    //   min: 0,
-    //   validate: [
-    //     {
-    //       validator: Number.isInteger,
-    //       msg: "Job duration should be an integer",
-    //     },
-    //   ],
-    // },
+    isImmediateJoining: {
+      type: Boolean,
+      default: false,
+    },
 
-    applicantsCount: {
+    preferredJoiningDate: {
+      type: Date,
+    },
+
+    workExperience: {
+      minExperience: {
+        type: Number,
+        required: true,
+        min: 0,
+        validate: [
+          {
+            validator: Number.isInteger,
+            msg: "Minimum work experience should be an integer",
+          },
+          {
+            validator: function (value: number) {
+              return value > 0;
+            },
+            msg: "Minimum work experience should be greater than 0",
+          },
+        ],
+      },
+
+      maxExperience: {
+        type: Number,
+        required: true,
+        min: 0,
+        validate: [
+          {
+            validator: Number.isInteger,
+            msg: "Maximum work experience should be an integer",
+          },
+          {
+            validator: function (value: number) {
+              return value > 0;
+            },
+            msg: "Maximum work experience should be greater than 0",
+          },
+        ],
+      },
+    },
+
+    openings: {
       type: Number,
-      default: 0,
-      min: 0,
+      required: true,
       validate: [
         {
           validator: Number.isInteger,
-          msg: "Applicatants count should be an integer",
+          msg: "No. of openings should be an integer",
+        },
+        {
+          validator: function (value: number) {
+            return value > 0;
+          },
+          msg: "No. of openings should be greater than 0",
         },
       ],
+    },
+
+    extraBenefits: {
+      type: [String],
+      default: [],
+    },
+
+    description: {
+      type: String,
+      maxlength: 2000,
+    },
+
+    applicants: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-JobSchema.virtual("employer", {
-  ref: "CompanyProfile",
-  localField: "userId",
-  foreignField: "user",
-  justOne: true,
-});
+// JobSchema.virtual("employer", {
+//   ref: "CompanyProfile",
+//   localField: "userId",
+//   foreignField: "user",
+//   justOne: true,
+// });
 
 JobSchema.index({
   title: "text",
-  minQualification: "text",
-  category: "text",
-  industry: "text",
   "location.city": "text",
-  "location.district": "text",
   "location.state": "text",
-  "location.pincode": "text",
+  "location.country": "text",
   description: "text",
 });
 

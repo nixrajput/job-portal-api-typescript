@@ -2,10 +2,35 @@ import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
 import { IRequest, IResponse, INext } from "../../interfaces/core/Express";
+import {
+  ICurrency,
+  IJobLocation,
+  ISalaryRange,
+  IWorkExperienceRange,
+} from "../../interfaces/db/Job";
 import { UserType } from "../../interfaces/db/User";
 import Logger from "../../logger";
 import Job from "../../models/Job";
 import RecruiterProfile from "../../models/RecruiterProfile";
+
+export interface IJobBodyData {
+  title: string;
+  mandatorySkills: string[];
+  optionalSkills?: string[];
+  salary: ISalaryRange;
+  currency?: ICurrency;
+  hasProbationPeriod?: boolean;
+  probationDuration?: number;
+  probationSalary?: ISalaryRange;
+  jobType: string;
+  location: IJobLocation;
+  isImmediateJoining: boolean;
+  preferredJoiningDate?: Date;
+  workExperience: IWorkExperienceRange;
+  openings: number;
+  extraBenefits?: string[];
+  description: string;
+}
 
 class JobController {
   /// @route  POST /api/v1/job/create
@@ -43,15 +68,9 @@ class JobController {
     }
 
     try {
-      const data = req.body;
+      const data: IJobBodyData = req.body;
 
       if (!data) {
-        return next(
-          new ApiError(StringValues.JOB_DATA_REQUIRED, StatusCodes.BAD_REQUEST)
-        );
-      }
-
-      if (Object.values(data).length < 1) {
         return next(
           new ApiError(StringValues.JOB_DATA_REQUIRED, StatusCodes.BAD_REQUEST)
         );
@@ -63,39 +82,128 @@ class JobController {
         );
       }
 
-      if (!data.noOfVacancies) {
+      if (!data.mandatorySkills) {
         return next(
           new ApiError(
-            StringValues.NO_OF_VACANCIES_REQUIRED,
+            StringValues.JOB_MANDATORY_SKILLS_REQUIRED,
             StatusCodes.BAD_REQUEST
           )
         );
       }
 
-      if (!data.minQualification) {
+      if (data.mandatorySkills.length < 1) {
         return next(
           new ApiError(
-            StringValues.MIN_QUALIFICATION_REQUIRED,
+            StringValues.JOB_MANDATORY_SKILLS_REQUIRED,
             StatusCodes.BAD_REQUEST
           )
         );
       }
 
-      if (!data.category) {
+      if (data.mandatorySkills.length > 5) {
         return next(
           new ApiError(
-            StringValues.JOB_CATEGORY_REQUIRED,
+            StringValues.JOB_MANDATORY_SKILLS_MAX_LIMIT_ERROR,
             StatusCodes.BAD_REQUEST
           )
         );
       }
 
-      if (!data.industry) {
+      if (data.optionalSkills && data.optionalSkills.length > 10) {
         return next(
           new ApiError(
-            StringValues.JOB_INDUSTRY_REQUIRED,
+            StringValues.JOB_OPTIONAL_SKILLS_MAX_LIMIT_ERROR,
             StatusCodes.BAD_REQUEST
           )
+        );
+      }
+
+      if (!data.salary) {
+        return next(
+          new ApiError(
+            StringValues.JOB_SALARY_RANGE_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.salary.minSalary) {
+        return next(
+          new ApiError(
+            StringValues.JOB_MIN_SALARY_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.salary.maxSalary) {
+        return next(
+          new ApiError(
+            StringValues.JOB_MAX_SALARY_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (data.currency && !data.currency.code) {
+        return next(
+          new ApiError(
+            StringValues.CURRENCY_CODE_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (data.currency && !data.currency.symbol) {
+        return next(
+          new ApiError(
+            StringValues.CURRENCY_SYMBOL_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (data.hasProbationPeriod === true) {
+        if (!data.probationDuration) {
+          return next(
+            new ApiError(
+              StringValues.JOB_PROBATION_DURATION_REQUIRED,
+              StatusCodes.BAD_REQUEST
+            )
+          );
+        }
+
+        if (!data.probationSalary) {
+          return next(
+            new ApiError(
+              StringValues.JOB_PROBATION_SALARY_RANGE_REQUIRED,
+              StatusCodes.BAD_REQUEST
+            )
+          );
+        }
+
+        if (!data.probationSalary.minSalary) {
+          return next(
+            new ApiError(
+              StringValues.JOB_MIN_PROBATION_SALARY_REQUIRED,
+              StatusCodes.BAD_REQUEST
+            )
+          );
+        }
+
+        if (!data.probationSalary.maxSalary) {
+          return next(
+            new ApiError(
+              StringValues.JOB_MAX_PROBATION_SALARY_REQUIRED,
+              StatusCodes.BAD_REQUEST
+            )
+          );
+        }
+      }
+
+      if (!data.jobType) {
+        return next(
+          new ApiError(StringValues.JOB_TYPE_REQUIRED, StatusCodes.BAD_REQUEST)
         );
       }
 
@@ -108,19 +216,106 @@ class JobController {
         );
       }
 
-      const job = new Job({
-        userId: currentUser._id,
+      if (!data.location.city) {
+        return next(
+          new ApiError(
+            StringValues.JOB_LOCATION_CITY_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.location.state) {
+        return next(
+          new ApiError(
+            StringValues.JOB_LOCATION_STATE_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.location.country) {
+        return next(
+          new ApiError(
+            StringValues.JOB_LOCATION_COUNTRY_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (data.isImmediateJoining === false && !data.preferredJoiningDate) {
+        return next(
+          new ApiError(
+            StringValues.JOB_PREFERRED_JOINING_DATE_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.workExperience) {
+        return next(
+          new ApiError(
+            StringValues.JOB_WORK_EXPERIENCE_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.workExperience.minExperience) {
+        return next(
+          new ApiError(
+            StringValues.JOB_MIN_WORK_EXPERIENCE_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.workExperience.maxExperience) {
+        return next(
+          new ApiError(
+            StringValues.JOB_MAX_WORK_EXPERIENCE_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.openings) {
+        return next(
+          new ApiError(
+            StringValues.JOB_OPENINGS_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!data.description) {
+        return next(
+          new ApiError(
+            StringValues.JOB_DESCRIPTION_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      const job = await Job.create({
+        recruiterId: currentUser._id,
         title: data.title,
-        noOfVacancies: data.noOfVacancies,
-        minQualification: data.minQualification,
-        category: data.category,
-        industry: data.industry,
-        duration: data.duration,
+        mandatorySkills: data.mandatorySkills,
+        optionalSkills: data.optionalSkills,
+        salary: data.salary,
+        currency: data.currency,
+        hasProbationPeriod: data.hasProbationPeriod,
+        probationDuration: data.probationDuration,
+        probationSalary: data.probationSalary,
+        jobType: data.jobType,
         location: data.location,
+        isImmediateJoining: data.isImmediateJoining,
+        preferredJoiningDate: data.preferredJoiningDate,
+        workExperience: data.workExperience,
+        openings: data.openings,
+        extraBenefits: data.extraBenefits,
         description: data.description,
       });
-
-      await job.save();
 
       if (!job) {
         return next(

@@ -74,12 +74,44 @@ class StringValues {
   public static JOB_VACANCIES_LIMIT_EXCEEDED = "Job vacancies limit exceeded";
   public static JOB_DATA_REQUIRED = "Job data are required";
   public static JOB_TITLE_REQUIRED = "Job title is required";
-  public static NO_OF_VACANCIES_REQUIRED = "No. of vacancies is required";
+  public static JOB_MANDATORY_SKILLS_REQUIRED = "Mandatory skills are required";
+  public static JOB_MANDATORY_SKILLS_MAX_LIMIT_ERROR =
+    "Maximum 5 mandatory skills are allowed";
+  public static JOB_OPTIONAL_SKILLS_MAX_LIMIT_ERROR =
+    "Maximum 10 optional skills are allowed";
+  public static JOB_SALARY_RANGE_REQUIRED = "Salary range is required";
+  public static JOB_MIN_SALARY_REQUIRED = "Minimum salary is required";
+  public static JOB_MAX_SALARY_REQUIRED = "Maximum salary is required";
+  public static JOB_PROBATION_DURATION_REQUIRED =
+    "Probation duration is required";
+  public static JOB_PROBATION_SALARY_RANGE_REQUIRED =
+    "Probation salary range is required";
+  public static JOB_MIN_PROBATION_SALARY_REQUIRED =
+    "Probation minimum salary is required";
+  public static JOB_MAX_PROBATION_SALARY_REQUIRED =
+    "Probation maximum salary is required";
+  public static JOB_OPENINGS_REQUIRED = "Job openings is required";
+  public static JOB_TYPE_REQUIRED = "Job type is required";
+  public static JOB_LOCATION_REQUIRED = "Job location is required";
+
+  public static CURRENCY_CODE_REQUIRED = "Currency code is required";
+  public static CURRENCY_SYMBOL_REQUIRED = "Currency symbol is required";
+  public static JOB_DESCRIPTION_REQUIRED = "Job description is required";
   public static MIN_QUALIFICATION_REQUIRED =
     "Minimum qualification is required";
   public static JOB_CATEGORY_REQUIRED = "Job category is required";
   public static JOB_INDUSTRY_REQUIRED = "Job industry is required";
-  public static JOB_LOCATION_REQUIRED = "Job location is required";
+  public static JOB_LOCATION_CITY_REQUIRED = "Job location city is required";
+  public static JOB_LOCATION_STATE_REQUIRED = "Job location state is required";
+  public static JOB_LOCATION_COUNTRY_REQUIRED =
+    "Job location country is required";
+  public static JOB_PREFERRED_JOINING_DATE_REQUIRED =
+    "Job preferred joining date is required";
+  public static JOB_WORK_EXPERIENCE_REQUIRED = "Work experience is required";
+  public static JOB_MIN_WORK_EXPERIENCE_REQUIRED =
+    "Minimum work experience is required";
+  public static JOB_MAX_WORK_EXPERIENCE_REQUIRED =
+    "Maximum work experience is required";
   public static ACTION_NOT_PERMITTED =
     "This account is not permitted to perform this action";
   public static PROFILE_NOT_FOUND = "Profile not found";

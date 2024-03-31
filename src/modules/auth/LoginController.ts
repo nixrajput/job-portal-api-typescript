@@ -48,32 +48,7 @@ class LoginController {
         );
       }
 
-      if (!password) {
-        return next(
-          new ApiError(StringValues.PASSWORD_REQUIRED, StatusCodes.BAD_REQUEST)
-        );
-      }
-
-      if (password.length < 8) {
-        return next(
-          new ApiError(
-            StringValues.PASSWORD_MIN_LENGTH_ERROR,
-            StatusCodes.BAD_REQUEST
-          )
-        );
-      }
-
-      if (password.length > 32) {
-        return next(
-          new ApiError(
-            StringValues.PASSWORD_MAX_LENGTH_ERROR,
-            StatusCodes.BAD_REQUEST
-          )
-        );
-      }
-
       const _email = email?.toLowerCase().trim();
-      const _password = password?.trim();
 
       const user = await User.findOne({ email: _email });
 
