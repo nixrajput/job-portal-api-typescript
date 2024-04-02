@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import type { IRecruiterProfileModel } from "../interfaces/db/recruiterProfile";
+import type { IRecruiterProfileModel } from "../interfaces/entities/recruiterProfile";
 
 const RecruiterProfileSchema = new Schema<IRecruiterProfileModel>(
   {

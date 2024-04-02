@@ -5,7 +5,7 @@ import MailServiceHelper from "../../helpers/MailServiceHelper";
 import EmailTemplateHelper from "../../helpers/MailTemplateHelper";
 import OtpServiceHelper from "../../helpers/OtpServiceHelper";
 import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
-import { UserType } from "../../interfaces/db/user";
+import { UserType } from "../../interfaces/entities/user";
 import Logger from "../../logger";
 import Otp from "../../models/Otp";
 import RecruiterProfile from "../../models/RecruiterProfile";
@@ -225,7 +225,7 @@ class RegisterController {
 
       Logger.error(errorMessage);
 
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR);
+      res.status(StatusCodes.BAD_REQUEST);
       return res.json({
         success: false,
         error: errorMessage,
@@ -520,7 +520,7 @@ class RegisterController {
 
       Logger.error(errorMessage);
 
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR);
+      res.status(StatusCodes.BAD_REQUEST);
       return res.json({
         success: false,
         error: errorMessage,

@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import type { IOtpModel } from "../interfaces/db/otp";
+import type { IOtpModel } from "../interfaces/entities/otp";
 import DateUtils from "../utils/dateUtils";
 
 const OtpSchema = new Schema<IOtpModel>(

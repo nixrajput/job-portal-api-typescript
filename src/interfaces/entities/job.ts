@@ -1,15 +1,15 @@
 import type { ObjectId, Document } from "mongoose";
 
-export interface IJobLocation {
-  city: string;
-  state: string;
-  country: string;
-}
-
 export enum JobType {
   Remote = "remote",
   InOffice = "in-office",
   Hybrid = "hybrid",
+}
+
+export interface IJobLocation {
+  city: string;
+  state: string;
+  country: string;
 }
 
 export interface ISalaryRange {
@@ -37,7 +37,7 @@ export interface IJob {
   hasProbationPeriod: boolean;
   probationDuration?: number;
   probationSalary?: ISalaryRange;
-  jobType: JobType;
+  jobType: string;
   location: IJobLocation;
   preferredJoiningDate?: Date;
   isImmediateJoining: boolean;
@@ -45,15 +45,15 @@ export interface IJob {
   openings: number;
   extraBenefits?: string[];
   description: string;
-  applicants: number;
 
   // category?: string;
   // industryType?: string;
   // department?: string;
   // roleCategory?: string;
+}
 
+export interface IJobModel extends IJob, Document {
+  applicants: number;
   createdAt: Date;
   updatedAt: Date;
 }
-
-export interface IJobModel extends IJob, Document {}

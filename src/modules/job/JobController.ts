@@ -1,45 +1,28 @@
-import type { PipelineStage } from "mongoose";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
+import type { IJobBodyData } from "../../interfaces/core/bodyData";
 import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
-import type {
-  ICurrency,
-  IJobLocation,
-  ISalaryRange,
-  IWorkExperienceRange,
-} from "../../interfaces/db/job";
-import { UserType } from "../../interfaces/db/user";
+import type { IJob } from "../../interfaces/entities/job";
+import { UserType } from "../../interfaces/entities/user";
 import Logger from "../../logger";
-import Job from "../../models/Job";
 import RecruiterProfile from "../../models/RecruiterProfile";
-
-export interface IJobBodyData {
-  title: string;
-  mandatorySkills: string[];
-  optionalSkills?: string[];
-  salary: ISalaryRange;
-  currency?: ICurrency;
-  hasProbationPeriod?: boolean;
-  probationDuration?: number;
-  probationSalary?: ISalaryRange;
-  jobType: string;
-  location: IJobLocation;
-  isImmediateJoining: boolean;
-  preferredJoiningDate?: Date;
-  workExperience: IWorkExperienceRange;
-  openings: number;
-  extraBenefits?: string[];
-  description: string;
-}
+import JobService from "../../services/JobService";
 
 class JobController {
-  /// @route  POST /api/v1/job/create
-  public static async createJob(
+  private readonly _jobSvc: JobService;
+
+  constructor(readonly jobSvc: JobService) {
+    this._jobSvc = jobSvc;
+  }
+
+  // Create new Job
+  // @route  POST /api/v1/job/create
+  public createJob = async (
     req: IRequest,
     res: IResponse,
     next: INext
-  ): Promise<any> {
+  ): Promise<any> => {
     if (req.method !== "POST") {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
@@ -297,7 +280,7 @@ class JobController {
         );
       }
 
-      const job = await Job.create({
+      const newJobData: IJob = {
         recruiterId: currentUser._id,
         title: data.title,
         mandatorySkills: data.mandatorySkills,
@@ -315,16 +298,9 @@ class JobController {
         openings: data.openings,
         extraBenefits: data.extraBenefits,
         description: data.description,
-      });
+      };
 
-      if (!job) {
-        return next(
-          new ApiError(
-            StringValues.SOMETHING_WENT_WRONG,
-            StatusCodes.BAD_REQUEST
-          )
-        );
-      }
+      const job = await this._jobSvc.createExc(newJobData);
 
       userProfile.jobPostsCount++;
       await userProfile.save();
@@ -338,23 +314,26 @@ class JobController {
       const errorMessage =
         error?.message || error || StringValues.SOMETHING_WENT_WRONG;
 
-      Logger.error(errorMessage);
+      Logger.error(
+        "JobController: createJob",
+        "errorInfo:" + JSON.stringify(error)
+      );
 
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR);
+      res.status(StatusCodes.BAD_REQUEST);
       return res.json({
         success: false,
         error: errorMessage,
       });
     }
-  }
+  };
 
-  // Get jobs
-  /// @route  GET /api/v1/job/all
-  public static async getJobs(
+  // Get Jobs
+  // @route  GET /api/v1/job/all
+  public getJobs = async (
     req: IRequest,
     res: IResponse,
     next: INext
-  ): Promise<any> {
+  ): Promise<any> => {
     if (req.method !== "GET") {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
@@ -365,283 +344,114 @@ class JobController {
     let sortParams: Record<string, any> = {};
 
     const reqQueries: Record<string, any> = req.query;
-
-    // await utility.checkIfAuth(req, res, next);
-
     const page = reqQueries["page"] ? parseInt(reqQueries["page"]) : 1;
     const limit = reqQueries["limit"] ? parseInt(reqQueries["limit"]) : 10;
     const skip = page - 1 >= 0 ? (page - 1) * limit : 0;
 
-    // if (reqQueries.minQualification) {
-    //   findParams = {
-    //     ...findParams,
-    //     minQualification: reqQueries.minQualification,
-    //   };
-    // }
+    try {
+      // if (reqQueries.minQualification) {
+      //   findParams = {
+      //     ...findParams,
+      //     minQualification: reqQueries.minQualification,
+      //   };
+      // }
 
-    // if (reqQueries.industry) {
-    //   findParams = {
-    //     ...findParams,
-    //     industry: reqQueries.industry,
-    //   };
-    // }
+      // if (reqQueries.industry) {
+      //   findParams = {
+      //     ...findParams,
+      //     industry: reqQueries.industry,
+      //   };
+      // }
 
-    // if (reqQueries.category) {
-    //   findParams = {
-    //     ...findParams,
-    //     category: reqQueries.category,
-    //   };
-    // }
+      // if (reqQueries.category) {
+      //   findParams = {
+      //     ...findParams,
+      //     category: reqQueries.category,
+      //   };
+      // }
 
-    // if (reqQueries.district) {
-    //   findParams = {
-    //     ...findParams,
-    //     "location.district": reqQueries.district,
-    //   };
-    // }
+      // if (reqQueries.district) {
+      //   findParams = {
+      //     ...findParams,
+      //     "location.district": reqQueries.district,
+      //   };
+      // }
 
-    if (reqQueries["q"]) {
-      findParams = {
-        ...findParams,
-        title: {
-          $regex: new RegExp(reqQueries["q"], "i"),
-        },
-      };
-    }
-
-    if (reqQueries["asc"]) {
-      if (Array.isArray(reqQueries["asc"])) {
-        reqQueries["asc"].map((key) => {
-          sortParams = {
-            ...sortParams,
-            [key]: 1,
-          };
-        });
-      } else {
-        sortParams = {
-          ...sortParams,
-          [reqQueries["asc"]]: 1,
+      if (reqQueries["q"]) {
+        findParams = {
+          ...findParams,
+          title: {
+            $regex: new RegExp(reqQueries["q"], "i"),
+          },
         };
       }
-    }
 
-    if (reqQueries["desc"]) {
-      if (Array.isArray(reqQueries["desc"])) {
-        reqQueries["desc"].map((key) => {
+      if (reqQueries["asc"]) {
+        if (Array.isArray(reqQueries["asc"])) {
+          reqQueries["asc"].map((key) => {
+            sortParams = {
+              ...sortParams,
+              [key]: 1,
+            };
+          });
+        } else {
           sortParams = {
             ...sortParams,
-            [key]: -1,
+            [reqQueries["asc"]]: 1,
           };
-        });
-      } else {
-        sortParams = {
-          ...sortParams,
-          [reqQueries["desc"]]: -1,
-        };
+        }
       }
+
+      if (reqQueries["desc"]) {
+        if (Array.isArray(reqQueries["desc"])) {
+          reqQueries["desc"].map((key) => {
+            sortParams = {
+              ...sortParams,
+              [key]: -1,
+            };
+          });
+        } else {
+          sortParams = {
+            ...sortParams,
+            [reqQueries["desc"]]: -1,
+          };
+        }
+      }
+
+      // console.log("findParams:", findParams);
+      // console.log("sortParams:", sortParams);
+
+      const finalResponse = await this._jobSvc.findAllExc({
+        findParams: findParams,
+        sortParams: sortParams,
+        page: page,
+        limit: limit,
+        skip: skip,
+        currentUser: req.currentUser,
+      });
+
+      res.status(StatusCodes.OK);
+      return res.json({
+        success: true,
+        message: StringValues.SUCCESS,
+        ...finalResponse,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || error || StringValues.SOMETHING_WENT_WRONG;
+
+      Logger.error(
+        "JobController: getJobs",
+        "errorInfo:" + JSON.stringify(error)
+      );
+
+      res.status(StatusCodes.BAD_REQUEST);
+      return res.json({
+        success: false,
+        error: errorMessage,
+      });
     }
-
-    // console.log("findParams:", findParams);
-    // console.log("sortParams:", sortParams);
-
-    let pipeline: PipelineStage[] = [
-      { $match: findParams },
-      { $sort: { createdAt: -1 } },
-      {
-        $lookup: {
-          from: "recruiterprofiles",
-          localField: "recruiterId",
-          foreignField: "userId",
-          pipeline: [
-            {
-              $project: {
-                _id: 1,
-                userId: 1,
-                companyName: 1,
-                website: 1,
-                logoUrl: 1,
-                about: 1,
-                address: 1,
-                createdAt: 1,
-                updatedAt: 1,
-              },
-            },
-          ],
-          as: "recruiter",
-        },
-      },
-      { $unwind: "$recruiter" },
-      {
-        $lookup: {
-          from: "jobapplications",
-          let: { job_id: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$jobId", "$$job_id"] },
-                    { $eq: ["$userId", req.currentUser?._id] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: "yourApplications",
-        },
-      },
-      {
-        $facet: {
-          total: [{ $count: "count" }],
-          data: [
-            {
-              $addFields: {
-                _id: "$_id",
-                isApplied: { $anyElementTrue: ["$yourApplications"] },
-              },
-            },
-            {
-              $project: { yourApplications: 0, __v: 0 },
-            },
-          ],
-        },
-      },
-      { $unwind: "$total" },
-      {
-        $project: {
-          currentPage: {
-            $literal: skip / limit + 1,
-          },
-          hasNextPage: {
-            $lt: [{ $multiply: [limit, Number(page)] }, "$total.count"],
-          },
-          totalPages: {
-            $ceil: {
-              $divide: ["$total.count", limit],
-            },
-          },
-          totalItems: "$total.count",
-          results: {
-            $slice: ["$data", skip, { $ifNull: [limit, "$total.count"] }],
-          },
-        },
-      },
-    ];
-
-    if (Object.keys(sortParams).length > 0) {
-      sortParams = {
-        ...sortParams,
-        createdAt: -1,
-      };
-
-      pipeline = [
-        { $match: findParams },
-        { $sort: sortParams },
-        {
-          $lookup: {
-            from: "recruiterprofiles",
-            localField: "recruiterId",
-            foreignField: "userId",
-            pipeline: [
-              {
-                $project: {
-                  _id: 1,
-                  userId: 1,
-                  companyName: 1,
-                  website: 1,
-                  logoUrl: 1,
-                  about: 1,
-                  address: 1,
-                  createdAt: 1,
-                  updatedAt: 1,
-                },
-              },
-            ],
-            as: "recruiter",
-          },
-        },
-        { $unwind: "$recruiter" },
-        {
-          $lookup: {
-            from: "jobapplications",
-            let: { job_id: "$_id" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$jobId", "$$job_id"] },
-                      { $eq: ["$userId", req.currentUser?._id] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: "yourApplications",
-          },
-        },
-        {
-          $facet: {
-            total: [{ $count: "count" }],
-            data: [
-              {
-                $addFields: {
-                  _id: "$_id",
-                  isApplied: { $anyElementTrue: ["$yourApplications"] },
-                },
-              },
-              {
-                $project: { yourApplications: 0, __v: 0 },
-              },
-            ],
-          },
-        },
-        { $unwind: "$total" },
-        {
-          $project: {
-            currentPage: {
-              $literal: skip / limit + 1,
-            },
-            hasNextPage: {
-              $lt: [{ $multiply: [limit, Number(page)] }, "$total.count"],
-            },
-            totalPages: {
-              $ceil: {
-                $divide: ["$total.count", limit],
-              },
-            },
-            totalItems: "$total.count",
-            results: {
-              $slice: ["$data", skip, { $ifNull: [limit, "$total.count"] }],
-            },
-          },
-        },
-      ];
-    }
-
-    // console.log("pipeline:", pipeline);
-
-    const response = await Job.aggregate(pipeline);
-
-    let finalResponse = {
-      currentPage: 1,
-      hasNextPage: false,
-      totalPages: 1,
-      totalItems: 0,
-      results: [],
-    };
-
-    if (response.length > 0) {
-      finalResponse = response[0];
-    }
-
-    res.status(StatusCodes.OK);
-    return res.json({
-      success: true,
-      message: StringValues.SUCCESS,
-      ...finalResponse,
-    });
-  }
+  };
 }
 
 export default JobController;

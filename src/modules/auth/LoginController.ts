@@ -94,7 +94,7 @@ class LoginController {
 
       Logger.error(errorMessage);
 
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR);
+      res.status(StatusCodes.BAD_REQUEST);
       return res.json({
         success: false,
         error: errorMessage,
@@ -204,7 +204,7 @@ class LoginController {
 
       Logger.error(errorMessage);
 
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR);
+      res.status(StatusCodes.BAD_REQUEST);
       return res.json({
         success: false,
         error: errorMessage,

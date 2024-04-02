@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
-import type { IJobModel } from "../interfaces/db/job";
-import { JobType } from "../interfaces/db/job";
+import type { IJobModel } from "../interfaces/entities/job";
+import { JobType } from "../interfaces/entities/job";
 
 const JobSchema = new Schema<IJobModel>(
   {

@@ -25,12 +25,13 @@ export interface IJobSeekerProfileProfile {
   sendNotificationOnWhatsApp: boolean;
   highestEducationalQualification: string;
   educationalDetails: IEducationalDetails;
+}
+
+export interface IJobSeekerProfileModel
+  extends IJobSeekerProfileProfile,
+    Document {
   appliedJobs: ObjectId[];
   appliedJobsCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
-
-export interface IJobSeekerProfileModel
-  extends IJobSeekerProfileProfile,
-    Document {}

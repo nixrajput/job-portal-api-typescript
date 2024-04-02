@@ -17,9 +17,10 @@ export interface IRecruiterProfile {
   xUrl?: string;
   instagramUrl?: string;
   facebookUrl?: string;
+}
+
+export interface IRecruiterProfileModel extends IRecruiterProfile, Document {
   jobPostsCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
-
-export interface IRecruiterProfileModel extends IRecruiterProfile, Document {}

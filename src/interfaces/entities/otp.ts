@@ -6,12 +6,14 @@ export interface IOtp {
   email?: string;
   phone?: string;
   userId?: ObjectId;
-  isUsed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface IOtpModel extends IOtp, Document {
+  isUsed: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+
+  // Methods
   isExpired(): Promise<boolean>;
   isAleadyUsed(): Promise<boolean>;
 }

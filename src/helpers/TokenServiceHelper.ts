@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import LocalConfig from "../config/LocalConfig";
 import Logger from "../logger";
 import Strings from "../constants/Strings";
-import type { IAuthTokenModel } from "../interfaces/db/authToken";
+import type { IAuthTokenModel } from "../interfaces/entities/authToken";
 import AuthToken from "../models/AuthToken";
 
 class TokenServiceHelper {

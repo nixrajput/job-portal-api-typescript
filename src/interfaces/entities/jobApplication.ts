@@ -17,8 +17,9 @@ export interface IJobApplication {
   status: JobStatus;
   dateOfJoining?: Date;
   remarks?: string;
+}
+
+export interface IJobApplicationModel extends IJobApplication, Document {
   createdAt: Date;
   updatedAt: Date;
 }
-
-export interface IJobApplicationModel extends IJobApplication, Document {}

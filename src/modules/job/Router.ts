@@ -5,8 +5,12 @@
 import { Router } from "express";
 import AuthMiddleware from "../../middlewares/Auth";
 import JobController from "./JobController";
+import JobService from "../../services/JobService";
 
 const JobRouter: Router = Router();
+
+const jobSvc = new JobService();
+const jobCtlr = new JobController(jobSvc);
 
 /**
  * @name createJob
@@ -16,7 +20,7 @@ const JobRouter: Router = Router();
  */
 JobRouter.route("/create").all(
   AuthMiddleware.isAuthenticatedUser,
-  JobController.createJob
+  jobCtlr.createJob
 );
 
 /**
@@ -25,6 +29,6 @@ JobRouter.route("/create").all(
  * @route GET /api/v1/job/all
  * @access public
  */
-JobRouter.route("/all").all(JobController.getJobs);
+JobRouter.route("/all").all(jobCtlr.getJobs);
 
 export default JobRouter;

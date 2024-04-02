@@ -33,13 +33,15 @@ export interface IUser {
   whatsAppNo?: string;
   password: string;
   passwordChangedAt: Date;
-  accountStatus: UserStatus;
-  userType: UserType;
-  createdAt: Date;
-  updatedAt: Date;
+  accountStatus: string;
+  userType: string;
 }
 
 export interface IUserModel extends IUser, Document {
+  createdAt: Date;
+  updatedAt: Date;
+
+  // Methods
   generateToken(): Promise<IAuthTokenModel>;
   getToken(): Promise<IAuthTokenModel>;
   isProfileComplete(): Promise<boolean>;

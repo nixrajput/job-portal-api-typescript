@@ -1,9 +1,9 @@
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import type { IAuthTokenModel } from "../interfaces/db/authToken";
-import type { IUserModel } from "../interfaces/db/user";
-import { UserStatus, UserType } from "../interfaces/db/user";
+import type { IAuthTokenModel } from "../interfaces/entities/authToken";
+import type { IUserModel } from "../interfaces/entities/user";
+import { UserStatus, UserType } from "../interfaces/entities/user";
 import LocalConfig from "../config/LocalConfig";
 import StringValues from "../constants/Strings";
 import Logger from "../logger";
