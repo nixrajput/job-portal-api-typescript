@@ -1,15 +1,15 @@
-import { PipelineStage } from "mongoose";
+import type { PipelineStage } from "mongoose";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
-import { IRequest, IResponse, INext } from "../../interfaces/core/Express";
-import {
+import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
+import type {
   ICurrency,
   IJobLocation,
   ISalaryRange,
   IWorkExperienceRange,
-} from "../../interfaces/db/Job";
-import { UserType } from "../../interfaces/db/User";
+} from "../../interfaces/db/job";
+import { UserType } from "../../interfaces/db/user";
 import Logger from "../../logger";
 import Job from "../../models/Job";
 import RecruiterProfile from "../../models/RecruiterProfile";
@@ -368,8 +368,8 @@ class JobController {
 
     // await utility.checkIfAuth(req, res, next);
 
-    const page = reqQueries.page ? parseInt(reqQueries.page) : 1;
-    const limit = reqQueries.limit ? parseInt(reqQueries.limit) : 10;
+    const page = reqQueries["page"] ? parseInt(reqQueries["page"]) : 1;
+    const limit = reqQueries["limit"] ? parseInt(reqQueries["limit"]) : 10;
     const skip = page - 1 >= 0 ? (page - 1) * limit : 0;
 
     // if (reqQueries.minQualification) {
@@ -400,18 +400,18 @@ class JobController {
     //   };
     // }
 
-    if (reqQueries.q) {
+    if (reqQueries["q"]) {
       findParams = {
         ...findParams,
         title: {
-          $regex: new RegExp(reqQueries.q, "i"),
+          $regex: new RegExp(reqQueries["q"], "i"),
         },
       };
     }
 
-    if (reqQueries.asc) {
-      if (Array.isArray(reqQueries.asc)) {
-        reqQueries.asc.map((key) => {
+    if (reqQueries["asc"]) {
+      if (Array.isArray(reqQueries["asc"])) {
+        reqQueries["asc"].map((key) => {
           sortParams = {
             ...sortParams,
             [key]: 1,
@@ -420,14 +420,14 @@ class JobController {
       } else {
         sortParams = {
           ...sortParams,
-          [reqQueries.asc]: 1,
+          [reqQueries["asc"]]: 1,
         };
       }
     }
 
-    if (reqQueries.desc) {
-      if (Array.isArray(reqQueries.desc)) {
-        reqQueries.desc.map((key) => {
+    if (reqQueries["desc"]) {
+      if (Array.isArray(reqQueries["desc"])) {
+        reqQueries["desc"].map((key) => {
           sortParams = {
             ...sortParams,
             [key]: -1,
@@ -436,7 +436,7 @@ class JobController {
       } else {
         sortParams = {
           ...sortParams,
-          [reqQueries.desc]: -1,
+          [reqQueries["desc"]]: -1,
         };
       }
     }
@@ -619,7 +619,7 @@ class JobController {
       ];
     }
 
-    console.log("pipeline:", pipeline);
+    // console.log("pipeline:", pipeline);
 
     const response = await Job.aggregate(pipeline);
 

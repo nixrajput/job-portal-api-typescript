@@ -1,4 +1,4 @@
-import { ObjectId, Document } from "mongoose";
+import type { ObjectId, Document } from "mongoose";
 
 export interface IOtp {
   otp: string;
@@ -11,9 +11,7 @@ export interface IOtp {
   updatedAt: Date;
 }
 
-interface IOtpModel extends IOtp, Document {
+export interface IOtpModel extends IOtp, Document {
   isExpired(): Promise<boolean>;
   isAleadyUsed(): Promise<boolean>;
 }
-
-export default IOtpModel;

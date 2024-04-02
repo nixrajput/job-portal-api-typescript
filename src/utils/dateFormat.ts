@@ -2,7 +2,7 @@
  * Define Date Format Class
  */
 
-enum FormatTypes {
+export enum DateFormatTypes {
   "dd-MM-yy",
   "dd-MM-yyyy",
   "yy-MM-dd",
@@ -13,7 +13,7 @@ class DateFormat {
   // Format to Date String
   public static toDateString(
     date: Date,
-    { format = FormatTypes["dd-MM-yyyy"], separator = "-" }
+    { format = DateFormatTypes["dd-MM-yyyy"], separator = "-" }
   ): string {
     if (!date) throw new Error("Date is not defined");
 
@@ -25,7 +25,7 @@ class DateFormat {
     const monthString = month < 10 ? "0" + month.toString() : month.toString();
     const dayString = day < 10 ? "0" + day.toString() : day.toString();
 
-    if (format === FormatTypes["dd-MM-yy"]) {
+    if (format === DateFormatTypes["dd-MM-yy"]) {
       return (
         dayString +
         separator +
@@ -35,11 +35,11 @@ class DateFormat {
       );
     }
 
-    if (format === FormatTypes["dd-MM-yyyy"]) {
+    if (format === DateFormatTypes["dd-MM-yyyy"]) {
       return dayString + separator + monthString + separator + yearString;
     }
 
-    if (format === FormatTypes["yy-MM-dd"]) {
+    if (format === DateFormatTypes["yy-MM-dd"]) {
       return (
         yearString.substring(2, yearString.length) +
         separator +
@@ -49,7 +49,7 @@ class DateFormat {
       );
     }
 
-    if (format === FormatTypes["yyyy-MM-dd"]) {
+    if (format === DateFormatTypes["yyyy-MM-dd"]) {
       return yearString + separator + monthString + separator + dayString;
     }
 
@@ -100,7 +100,7 @@ class DateFormat {
   public static toDateTimeString(
     date: Date,
     {
-      format = FormatTypes["dd-MM-yyyy"],
+      format = DateFormatTypes["dd-MM-yyyy"],
       dateSeparator = "-",
       is24HourFormat = false,
       showSeconds = false,

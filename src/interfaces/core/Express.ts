@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import IUserModel from "../db/User";
+import type { NextFunction, Request, Response } from "express";
+import type { IUserModel } from "../db/user";
 
 /**
  * Define custom Express's Request interface

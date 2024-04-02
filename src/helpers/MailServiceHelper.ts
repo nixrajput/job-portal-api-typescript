@@ -2,7 +2,7 @@
  * Define Mail Helper class
  */
 
-import sgMail, { MailDataRequired } from "@sendgrid/mail";
+import sgMail from "@sendgrid/mail";
 import LocalConfig from "../config/LocalConfig";
 import Logger from "../logger";
 import StringValues from "../constants/Strings";

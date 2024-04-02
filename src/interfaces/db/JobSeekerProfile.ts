@@ -1,4 +1,4 @@
-import { ObjectId, Document } from "mongoose";
+import type { ObjectId, Document } from "mongoose";
 
 export interface IEducationalDetails {
   qualification: string;
@@ -31,6 +31,6 @@ export interface IJobSeekerProfileProfile {
   updatedAt: Date;
 }
 
-interface IJobSeekerProfileModel extends IJobSeekerProfileProfile, Document {}
-
-export default IJobSeekerProfileModel;
+export interface IJobSeekerProfileModel
+  extends IJobSeekerProfileProfile,
+    Document {}

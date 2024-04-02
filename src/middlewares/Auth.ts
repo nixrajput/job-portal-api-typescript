@@ -5,7 +5,7 @@
 import StatusCodes from "../constants/StatusCodes";
 import Strings from "../constants/Strings";
 import ApiError from "../exceptions/ApiError";
-import { INext, IRequest, IResponse } from "../interfaces/core/Express";
+import type { INext, IRequest, IResponse } from "../interfaces/core/express";
 import User from "../models/User";
 import TokenServiceHelper from "../helpers/TokenServiceHelper";
 

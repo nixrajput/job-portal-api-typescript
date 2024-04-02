@@ -2,7 +2,7 @@
  * Define EnvConfig interface
  */
 
-interface IEnvConfig {
+export interface IEnvConfig {
   PORT: number | undefined;
   NODE_ENV: string | undefined;
   SERVER_MAINTENANCE: boolean | undefined;
@@ -25,5 +25,3 @@ interface IEnvConfig {
   CLOUDINARY_API_KEY: string | undefined;
   CLOUDINARY_API_SECRET: string | undefined;
 }
-
-export default IEnvConfig;

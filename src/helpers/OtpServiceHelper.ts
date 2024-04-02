@@ -1,5 +1,5 @@
 import optGenerator from "otp-generator";
-import IOtpModel from "../interfaces/db/Otp";
+import type { IOtpModel } from "../interfaces/db/otp";
 import Otp from "../models/Otp";
 
 export interface IOtpOptions {

@@ -2,8 +2,9 @@
  * Define Morgan Middleware
  */
 
-import { Application } from "express";
-import morgan, { StreamOptions } from "morgan";
+import type { Application } from "express";
+import morgan from "morgan";
+import type { StreamOptions } from "morgan";
 import Logger from "../logger";
 
 class Morgan {

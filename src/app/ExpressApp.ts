@@ -1,4 +1,5 @@
-import express, { Application } from "express";
+import express from "express";
+import type { Application } from "express";
 import LocalConfig from "../config/LocalConfig";
 import Logger from "../logger";
 import ExceptionHandler from "../exceptions/Handler";

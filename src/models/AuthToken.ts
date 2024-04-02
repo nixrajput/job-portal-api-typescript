@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import IAuthTokenModel from "../interfaces/db/AuthToken";
+import type { IAuthTokenModel } from "../interfaces/db/authToken";
 
 const AuthTokenSchema = new Schema<IAuthTokenModel>(
   {

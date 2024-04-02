@@ -1,8 +1,23 @@
 {
   "compilerOptions": {
-    "lib": ["ES6"],
-    "module": "CommonJS",
-    "target": "ES6",
+    // Enable latest features
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+
+    // Bundler mode
+    "moduleResolution": "Bundler",
+    "allowArbitraryExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -10,16 +25,16 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
     "composite": true,
-    "strict": true,
     "downlevelIteration": true,
-    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
+
+    // Some stricter flags
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
     "esModuleInterop": true,
     "outDir": "dist",
     "rootDir": "src"

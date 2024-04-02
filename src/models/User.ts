@@ -1,12 +1,13 @@
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import IUserModel, { UserStatus, UserType } from "../interfaces/db/User";
+import type { IAuthTokenModel } from "../interfaces/db/authToken";
+import type { IUserModel } from "../interfaces/db/user";
+import { UserStatus, UserType } from "../interfaces/db/user";
 import LocalConfig from "../config/LocalConfig";
 import StringValues from "../constants/Strings";
 import Logger from "../logger";
 import AuthToken from "./AuthToken";
-import IAuthTokenModel from "../interfaces/db/AuthToken";
 import TokenServiceHelper from "../helpers/TokenServiceHelper";
 
 const UserSchema = new Schema<IUserModel>(

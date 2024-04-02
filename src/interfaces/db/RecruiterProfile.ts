@@ -1,5 +1,5 @@
-import { ObjectId, Document } from "mongoose";
-import IAddress from "../core/Address";
+import type { ObjectId, Document } from "mongoose";
+import type { IAddress } from "../core/address";
 
 export interface IRecruiterProfile {
   userId: ObjectId;
@@ -22,6 +22,4 @@ export interface IRecruiterProfile {
   updatedAt: Date;
 }
 
-interface IRecruiterProfileModel extends IRecruiterProfile, Document {}
-
-export default IRecruiterProfileModel;
+export interface IRecruiterProfileModel extends IRecruiterProfile, Document {}

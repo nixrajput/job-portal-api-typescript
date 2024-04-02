@@ -1,4 +1,4 @@
-import { ObjectId, Document } from "mongoose";
+import type { ObjectId, Document } from "mongoose";
 
 export enum JobStatus {
   Applied = "applied",
@@ -21,6 +21,4 @@ export interface IJobApplication {
   updatedAt: Date;
 }
 
-interface IJobApplicationModel extends IJobApplication, Document {}
-
-export default IJobApplicationModel;
+export interface IJobApplicationModel extends IJobApplication, Document {}

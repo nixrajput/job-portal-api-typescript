@@ -1,4 +1,8 @@
-interface IAddress {
+/**
+ * Define Address interface
+ */
+
+export interface IAddress {
   addressLine1: string;
   addressLine2?: string;
   city: string;
@@ -6,5 +10,3 @@ interface IAddress {
   country: string;
   pincode: string;
 }
-
-export default IAddress;

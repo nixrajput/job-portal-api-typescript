@@ -4,9 +4,8 @@ import ApiError from "../../exceptions/ApiError";
 import MailServiceHelper from "../../helpers/MailServiceHelper";
 import MailTemplateHelper from "../../helpers/MailTemplateHelper";
 import OtpServiceHelper from "../../helpers/OtpServiceHelper";
-import { IRequest, IResponse, INext } from "../../interfaces/core/Express";
+import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
 import Logger from "../../logger";
-import Otp from "../../models/Otp";
 import User from "../../models/User";
 import Validators from "../../utils/validator";
 
@@ -31,7 +30,7 @@ class LoginController {
     }
 
     try {
-      const { email, password } = req.body;
+      const { email } = req.body;
 
       if (!email) {
         return next(

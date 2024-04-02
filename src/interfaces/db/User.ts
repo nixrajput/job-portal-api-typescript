@@ -1,5 +1,5 @@
-import { Document } from "mongoose";
-import IAuthTokenModel from "./AuthToken";
+import type { Document } from "mongoose";
+import type { IAuthTokenModel } from "./authToken";
 
 export enum UserStatus {
   active = "active",
@@ -39,11 +39,9 @@ export interface IUser {
   updatedAt: Date;
 }
 
-interface IUserModel extends IUser, Document {
+export interface IUserModel extends IUser, Document {
   generateToken(): Promise<IAuthTokenModel>;
   getToken(): Promise<IAuthTokenModel>;
   isProfileComplete(): Promise<boolean>;
   matchPassword(password: string): Promise<boolean>;
 }
-
-export default IUserModel;

@@ -2,8 +2,6 @@
  * Define Utility Class
  */
 
-import cloudinary from "cloudinary";
-
 class Utility {
   /**
    * Generate Random String

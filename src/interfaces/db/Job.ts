@@ -1,4 +1,4 @@
-import { ObjectId, Document } from "mongoose";
+import type { ObjectId, Document } from "mongoose";
 
 export interface IJobLocation {
   city: string;
@@ -56,6 +56,4 @@ export interface IJob {
   updatedAt: Date;
 }
 
-interface IJobModel extends IJob, Document {}
-
-export default IJobModel;
+export interface IJobModel extends IJob, Document {}

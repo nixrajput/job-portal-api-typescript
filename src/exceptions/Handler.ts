@@ -2,13 +2,13 @@
  * Define the error & exception handlers
  */
 
-import { Application } from "express";
+import type { Application } from "express";
 import LocalConfig from "../config/LocalConfig";
 import Logger from "../logger";
 import ApiError from "../exceptions/ApiError";
 import StatusCodes from "../constants/StatusCodes";
 import StringValues from "../constants/Strings";
-import { INext, IRequest, IResponse } from "../interfaces/core/Express";
+import type { INext, IRequest, IResponse } from "../interfaces/core/express";
 
 class ExceptionHandler {
   /**
@@ -76,7 +76,7 @@ class ExceptionHandler {
    * @param err any
    * @param req IRequest
    * @param res IResponse
-   * @param next INext
+   * @param _next INext
    * @returns any
    */
   public static errorHandler(
@@ -84,7 +84,7 @@ class ExceptionHandler {
     req: IRequest,
     res: IResponse,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    next: INext
+    _next: INext
   ) {
     err.statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
     err.message = err.message || StringValues.INTERNAL_SERVER_ERROR;
@@ -135,15 +135,15 @@ class ExceptionHandler {
    * @name logErrors
    * @description Register your error/exception monitoring tools right here ie. before "next(err)"!
    * @param err any
-   * @param req IRequest
-   * @param res IResponse
+   * @param _req IRequest
+   * @param _res IResponse
    * @param next INext
    * @returns any
    */
   public static logErrors(
     err: any,
-    req: IRequest,
-    res: IResponse,
+    _req: IRequest,
+    _res: IResponse,
     next: INext
   ) {
     Logger.error(err.stack);

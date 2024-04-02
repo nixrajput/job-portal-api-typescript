@@ -2,7 +2,8 @@
  * Enable basic express apis middleware
  */
 
-import { json, urlencoded, Application } from "express";
+import { json, urlencoded } from "express";
+import type { Application } from "express";
 import bodyParser from "body-parser";
 import helmet from "helmet";
 import compression from "compression";

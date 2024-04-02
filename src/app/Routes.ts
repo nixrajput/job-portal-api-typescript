@@ -2,7 +2,7 @@
  * Define Routes
  */
 
-import { Application } from "express";
+import type { Application } from "express";
 import LocalConfig from "../config/LocalConfig";
 import Logger from "../logger";
 import JobRouter from "../modules/job/Router";

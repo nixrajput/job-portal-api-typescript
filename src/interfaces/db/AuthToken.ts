@@ -1,4 +1,4 @@
-import { ObjectId, Document } from "mongoose";
+import type { ObjectId, Document } from "mongoose";
 
 export interface IAuthToken {
   userId: ObjectId;
@@ -8,8 +8,6 @@ export interface IAuthToken {
   updatedAt: Date;
 }
 
-interface IAuthTokenModel extends IAuthToken, Document {
+export interface IAuthTokenModel extends IAuthToken, Document {
   isExpired(): Promise<boolean>;
 }
-
-export default IAuthTokenModel;
