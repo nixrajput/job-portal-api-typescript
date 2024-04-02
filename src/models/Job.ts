@@ -250,12 +250,12 @@ const JobSchema = new Schema<IJobModel>(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// JobSchema.virtual("employer", {
-//   ref: "CompanyProfile",
-//   localField: "userId",
-//   foreignField: "user",
-//   justOne: true,
-// });
+JobSchema.virtual("recruiter", {
+  ref: "RecruiterProfile",
+  localField: "recruiterId",
+  foreignField: "userId",
+  justOne: true,
+});
 
 JobSchema.index({
   title: "text",
