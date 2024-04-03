@@ -36,7 +36,9 @@
     // "noPropertyAccessFromIndexSignature": true,
 
     "esModuleInterop": true,
-    "outDir": "dist",
-    "rootDir": "src"
-  }
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
