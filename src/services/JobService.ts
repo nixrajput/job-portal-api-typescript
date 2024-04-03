@@ -1,5 +1,5 @@
 /**
- * Define Job Service
+ * Define User Service Class
  */
 
 import type { PipelineStage } from "mongoose";
@@ -11,7 +11,7 @@ import Job from "../models/Job";
 
 class JobService {
   // Create Job Service
-  public async createExc(newjob: IJob): Promise<IJobModel> {
+  public createExc = async (newjob: IJob): Promise<IJobModel> => {
     try {
       const job = await Job.create({
         recruiterId: newjob.recruiterId,
@@ -41,10 +41,10 @@ class JobService {
       );
       return Promise.reject(error);
     }
-  }
+  };
 
-  // Get Jobs Service
-  public async findAllExc({
+  // Find Jobs Service
+  public findAllExc = async ({
     findParams,
     sortParams,
     page,
@@ -58,7 +58,7 @@ class JobService {
     limit?: number;
     skip?: number;
     currentUser?: IUserModel;
-  }): Promise<IJobListResponse> {
+  }): Promise<IJobListResponse> => {
     try {
       // Defining Sort Params
       if (Object.keys(sortParams).length > 0) {
@@ -174,7 +174,7 @@ class JobService {
       Logger.error("JobService: findAll", "errorInfo:" + JSON.stringify(error));
       return Promise.reject(error);
     }
-  }
+  };
 }
 
 export default JobService;
