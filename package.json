@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "dotenvx run --env-file=.env.local -- bun --watch run src/index.ts",
-    "start": ".bun/bun run src/index.ts",
+    "dev": "dotenvx run --env-file=.env.local -- bun --watch src/index.ts",
+    "start": ".bun/bun src/index.ts",
     "lint": "eslint . --ext .ts",
     "push": "git add -A && git commit -m \"initial commit\" && git push origin master"
   },
