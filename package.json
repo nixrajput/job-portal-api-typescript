@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "dotenvx run --env-file=.env.local -- bun --watch src/index.ts",
-    "start": ".bun/bun src/index.ts",
+    "start": "npx tsc && node dist/index.js",
     "lint": "eslint . --ext .ts",
     "push": "git add -A && git commit -m \"initial commit\" && git push origin master"
   },
