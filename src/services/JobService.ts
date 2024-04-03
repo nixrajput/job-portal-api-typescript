@@ -36,7 +36,7 @@ class JobService {
       return Promise.resolve(job);
     } catch (error) {
       Logger.error(
-        "JobService: createJob",
+        "JobService: createExc",
         "errorInfo:" + JSON.stringify(error)
       );
       return Promise.reject(error);
@@ -171,7 +171,10 @@ class JobService {
 
       return Promise.resolve(response);
     } catch (error) {
-      Logger.error("JobService: findAll", "errorInfo:" + JSON.stringify(error));
+      Logger.error(
+        "JobService: findAllExc",
+        "errorInfo:" + JSON.stringify(error)
+      );
       return Promise.reject(error);
     }
   };

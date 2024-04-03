@@ -5,8 +5,12 @@
 import { Router } from "express";
 import RegisterController from "./RegisterController";
 import LoginController from "./LoginController";
+import UserService from "../../services/UserService";
 
 const AuthRouter: Router = Router();
+
+const userSvc = new UserService();
+const registerCtlr = new RegisterController(userSvc);
 
 /**
  * @name RegisterController.sendRegisterOtp
@@ -14,7 +18,7 @@ const AuthRouter: Router = Router();
  * @route POST /api/v1/auth/send-register-otp
  * @access Public
  */
-AuthRouter.route("/send-register-otp").all(RegisterController.sendRegisterOtp);
+AuthRouter.route("/send-register-otp").all(registerCtlr.sendRegisterOtp);
 
 /**
  * @name RegisterController.register
@@ -22,7 +26,7 @@ AuthRouter.route("/send-register-otp").all(RegisterController.sendRegisterOtp);
  * @route POST /api/v1/auth/register
  * @access Public
  */
-AuthRouter.route("/register").all(RegisterController.register);
+AuthRouter.route("/register").all(registerCtlr.register);
 
 /**
  * @name LoginController.login

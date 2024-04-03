@@ -22,19 +22,19 @@ export enum UserType {
 
 export interface IUser {
   name: string;
-  nameChangedAt: Date;
+  nameChangedAt?: Date;
   email: string;
-  isEmailVerified: boolean;
-  emailChangedAt: Date;
-  countryCode: string;
+  isEmailVerified?: boolean;
+  emailChangedAt?: Date;
+  countryCode?: string;
   phone: string;
-  isPhoneVerified: boolean;
-  phoneChangedAt: Date;
+  isPhoneVerified?: boolean;
+  phoneChangedAt?: Date;
   whatsAppNo?: string;
   password: string;
-  passwordChangedAt: Date;
-  accountStatus: string;
+  passwordChangedAt?: Date;
   userType: string;
+  accountStatus?: string;
 }
 
 export interface IUserModel extends IUser, Document {

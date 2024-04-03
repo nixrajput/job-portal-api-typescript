@@ -2,12 +2,11 @@
   "name": "job-portal-api",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "dotenvx run --env-file=.env.local -- bun --watch ./src/index.ts",
-    "start": ".bun/bun ./src/index.ts",
+    "dev": "dotenvx run --env-file=.env.local -- bun --watch src/index.ts",
+    "start": ".bun/bun src/index.ts",
     "lint": "eslint . --ext .ts",
     "push": "git add -A && git commit -m \"initial commit\" && git push origin master"
   },
@@ -32,7 +31,6 @@
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
     "eslint": "^8.57.0",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   },
   "dependencies": {

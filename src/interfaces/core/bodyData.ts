@@ -23,3 +23,17 @@ export interface IJobBodyData {
   extraBenefits?: string[];
   description: string;
 }
+
+export interface IRegisterBodyData {
+  userType: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+  phone: string;
+  countryCode?: string;
+  whatsAppNo?: string;
+  companyName?: string;
+  designation?: string;
+  otp?: string;
+}

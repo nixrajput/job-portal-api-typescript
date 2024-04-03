@@ -4,15 +4,23 @@ import ApiError from "../../exceptions/ApiError";
 import MailServiceHelper from "../../helpers/MailServiceHelper";
 import EmailTemplateHelper from "../../helpers/MailTemplateHelper";
 import OtpServiceHelper from "../../helpers/OtpServiceHelper";
+import type { IRegisterBodyData } from "../../interfaces/core/bodyData";
 import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
-import { UserType } from "../../interfaces/entities/user";
+import { UserType, type IUser } from "../../interfaces/entities/user";
 import Logger from "../../logger";
 import Otp from "../../models/Otp";
 import RecruiterProfile from "../../models/RecruiterProfile";
 import User from "../../models/User";
+import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
 
 class RegisterController {
+  private readonly _userSvc: UserService;
+
+  constructor(readonly jobSvc: UserService) {
+    this._userSvc = jobSvc;
+  }
+
   /**
    * @name sendRegisterOtp
    * @description Perform send register otp action.
@@ -21,11 +29,11 @@ class RegisterController {
    * @param next INext
    * @returns Promise<any>
    */
-  public static async sendRegisterOtp(
+  public sendRegisterOtp = async (
     req: IRequest,
     res: IResponse,
     next: INext
-  ): Promise<any> {
+  ): Promise<any> => {
     if (req.method !== "POST") {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
@@ -42,7 +50,7 @@ class RegisterController {
         confirmPassword,
         companyName,
         designation,
-      } = req.body;
+      }: IRegisterBodyData = req.body;
 
       if (!userType) {
         return next(
@@ -231,7 +239,7 @@ class RegisterController {
         error: errorMessage,
       });
     }
-  }
+  };
 
   /**
    * @name registerUser
@@ -241,11 +249,11 @@ class RegisterController {
    * @param next INext
    * @returns Promise<any>
    */
-  public static async register(
+  public register = async (
     req: IRequest,
     res: IResponse,
     next: INext
-  ): Promise<any> {
+  ): Promise<any> => {
     if (req.method !== "POST") {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
@@ -265,7 +273,7 @@ class RegisterController {
         companyName,
         designation,
         otp,
-      } = req.body;
+      }: IRegisterBodyData = req.body;
 
       if (!userType) {
         return next(
@@ -447,29 +455,17 @@ class RegisterController {
         );
       }
 
-      const _currentDateTime = Date.now();
-
-      const newUser = await User.create({
+      const newUserData: IUser = {
         userType: userType,
         name: _name,
         email: _email,
-        isEmailVerified: true,
-        emailChangedAt: _currentDateTime,
         countryCode: countryCode?.trim(),
         phone: _phone,
-        phoneChangedAt: _currentDateTime,
         whatsAppNo: whatsAppNo?.trim(),
         password: password?.trim(),
-      });
+      };
 
-      if (!newUser) {
-        return next(
-          new ApiError(
-            StringValues.SOMETHING_WENT_WRONG,
-            StatusCodes.BAD_REQUEST
-          )
-        );
-      }
+      const newUser = await this._userSvc.createExc(newUserData);
 
       // Create recuiter profile
       if (userType === UserType.Recruiter) {
@@ -526,7 +522,7 @@ class RegisterController {
         error: errorMessage,
       });
     }
-  }
+  };
 }
 
 export default RegisterController;
