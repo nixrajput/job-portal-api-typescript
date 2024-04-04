@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import type { IAuthTokenModel } from "../interfaces/entities/authToken";
 import type { IUserModel } from "../interfaces/entities/user";
 import { UserStatus, UserType } from "../interfaces/entities/user";
