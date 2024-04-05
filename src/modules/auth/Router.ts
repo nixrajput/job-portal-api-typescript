@@ -6,11 +6,14 @@ import { Router } from "express";
 import RegisterController from "./RegisterController";
 import LoginController from "./LoginController";
 import UserService from "../../services/UserService";
+import ProfileService from "services/ProfileService";
 
 const AuthRouter: Router = Router();
 
 const userSvc = new UserService();
-const registerCtlr = new RegisterController(userSvc);
+const profileSvc = new ProfileService();
+const registerCtlr = new RegisterController(userSvc, profileSvc);
+const loginCtlr = new LoginController(userSvc);
 
 /**
  * @name RegisterController.sendRegisterOtp
@@ -34,6 +37,6 @@ AuthRouter.route("/register").all(registerCtlr.register);
  * @route POST /api/v1/auth/login
  * @access Public
  */
-AuthRouter.route("/login").all(LoginController.login);
+AuthRouter.route("/login").all(loginCtlr.login);
 
 export default AuthRouter;

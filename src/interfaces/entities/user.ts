@@ -31,13 +31,14 @@ export interface IUser {
   isPhoneVerified?: boolean;
   phoneChangedAt?: Date;
   whatsAppNo?: string;
-  password: string;
-  passwordChangedAt?: Date;
   userType: string;
   accountStatus?: string;
 }
 
 export interface IUserModel extends IUser, Document {
+  password?: string;
+  passwordChangedAt?: Date;
+  salt: string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -45,5 +46,6 @@ export interface IUserModel extends IUser, Document {
   generateToken(): Promise<IAuthTokenModel>;
   getToken(): Promise<IAuthTokenModel>;
   isProfileComplete(): Promise<boolean>;
+  setPassword(password: string): Promise<void>;
   matchPassword(password: string): Promise<boolean>;
 }

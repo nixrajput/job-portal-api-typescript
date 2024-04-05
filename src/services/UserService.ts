@@ -2,35 +2,91 @@
  * Define User Service Class
  */
 
+import type { ObjectId } from "mongoose";
 import type { IUser, IUserModel } from "../interfaces/entities/user";
 import Logger from "../logger";
 import User from "../models/User";
 
 class UserService {
-  // Create User Service
-  public createExc = async (_user: IUser): Promise<IUserModel> => {
+  // Create an `User`
+  public createUserExc = async (_user: IUser): Promise<IUserModel> => {
     try {
-      const _currentDateTime = Date.now();
-
-      const user = await User.create({
-        userType: _user.userType,
-        name: _user.name,
-        nameChangedAt: _currentDateTime,
-        email: _user.email,
-        isEmailVerified: true,
-        emailChangedAt: _currentDateTime,
-        countryCode: _user.countryCode?.trim(),
-        phone: _user.phone,
-        phoneChangedAt: _currentDateTime,
-        whatsAppNo: _user.whatsAppNo?.trim(),
-        password: _user.password?.trim(),
-        passwordChangedAt: _currentDateTime,
-      });
+      const user = await User.create(_user);
 
       return Promise.resolve(user);
     } catch (error) {
       Logger.error(
-        "UserService: createExc",
+        "UserService: createUserExc",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      return Promise.reject(error);
+    }
+  };
+
+  // Find an `User` by Id
+  public findUserByIdExc = async (
+    _userId: string | ObjectId
+  ): Promise<IUserModel> => {
+    try {
+      const user = await User.findById(_userId);
+
+      return Promise.resolve(user);
+    } catch (error) {
+      Logger.error(
+        "UserService: findUserByIdExc",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      return Promise.reject(error);
+    }
+  };
+
+  // Find an `User` by an email
+  public findUserByEmailExc = async (_email: string): Promise<IUserModel> => {
+    try {
+      const user = await User.findOne({ email: _email });
+
+      return Promise.resolve(user);
+    } catch (error) {
+      Logger.error(
+        "UserService: findUserByEmailExc",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      return Promise.reject(error);
+    }
+  };
+
+  // Check if `User` already registered with the email
+  public checkIsEmailExistsExc = async (_email: string): Promise<boolean> => {
+    try {
+      const user = await User.findOne({ email: _email });
+
+      if (!user) {
+        return Promise.resolve(false);
+      }
+
+      return Promise.resolve(true);
+    } catch (error) {
+      Logger.error(
+        "UserService: checkIsEmailExistsExc",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      return Promise.reject(error);
+    }
+  };
+
+  // Check if `User` already registered with the phone number
+  public checkIsPhoneExistsExc = async (_phone: string): Promise<boolean> => {
+    try {
+      const user = await User.findOne({ phone: _phone });
+
+      if (!user) {
+        return Promise.resolve(false);
+      }
+
+      return Promise.resolve(true);
+    } catch (error) {
+      Logger.error(
+        "UserService: checkIsEmailExistsExc",
         "errorInfo:" + JSON.stringify(error)
       );
       return Promise.reject(error);

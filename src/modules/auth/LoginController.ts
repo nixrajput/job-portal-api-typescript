@@ -1,3 +1,4 @@
+import type UserService from "services/UserService";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
@@ -10,6 +11,12 @@ import User from "../../models/User";
 import Validators from "../../utils/validator";
 
 class LoginController {
+  private readonly _userSvc: UserService;
+
+  constructor(readonly jobSvc: UserService) {
+    this._userSvc = jobSvc;
+  }
+
   /**
    * @name sendLoginOtp
    * @description Perform send login otp action.
@@ -18,11 +25,11 @@ class LoginController {
    * @param next INext
    * @returns Promise<any>
    */
-  public static async sendLoginOtp(
+  public sendLoginOtp = async (
     req: IRequest,
     res: IResponse,
     next: INext
-  ): Promise<any> {
+  ): Promise<any> => {
     if (req.method !== "POST") {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
@@ -100,7 +107,7 @@ class LoginController {
         error: errorMessage,
       });
     }
-  }
+  };
 
   /**
    * @name login
@@ -110,19 +117,23 @@ class LoginController {
    * @param next INext
    * @returns Promise<any>
    */
-  public static async login(
+  public login = async (
     req: IRequest,
     res: IResponse,
     next: INext
-  ): Promise<any> {
+  ): Promise<any> => {
     if (req.method !== "POST") {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
     }
 
+    Logger.info("Login Start");
+
     try {
-      const { email, password } = req.body;
+      const { email, password }: { email: string; password: string } = req.body;
+
+      Logger.info("Validation Start");
 
       if (!email) {
         return next(
@@ -163,12 +174,16 @@ class LoginController {
         );
       }
 
+      Logger.info("Validation End");
+
       const _email = email?.toLowerCase().trim();
       const _password = password?.trim();
 
-      const user = await User.findOne({ email: _email });
+      Logger.info("Check Email Exists Start");
 
-      if (!user) {
+      const isEmailExists = await this._userSvc.checkIsEmailExistsExc(_email);
+      Logger.info("Check Email Exists End");
+      if (!isEmailExists) {
         return next(
           new ApiError(
             StringValues.EMAIL_NOT_REGISTERED,
@@ -177,7 +192,13 @@ class LoginController {
         );
       }
 
+      Logger.info("Find User Start");
+      const user = await this._userSvc.findUserByEmailExc(_email);
+      Logger.info("Find User End");
+
+      Logger.info("Match Password Start");
       const isPasswordMatched = await user.matchPassword(_password);
+      Logger.info("Match Password End");
 
       if (!isPasswordMatched) {
         return next(
@@ -185,12 +206,16 @@ class LoginController {
         );
       }
 
+      Logger.info("Get Token Start");
       const authToken = await user.getToken();
+      Logger.info("Get Token End");
 
       const resData = {
         token: authToken.token,
         expiresAt: authToken.expiresAt,
       };
+
+      Logger.info("Login End");
 
       res.status(StatusCodes.OK);
       return res.json({
@@ -202,7 +227,10 @@ class LoginController {
       const errorMessage =
         error?.message || error || StringValues.SOMETHING_WENT_WRONG;
 
-      Logger.error(errorMessage);
+      Logger.error(
+        "LoginController: login",
+        "errorInfo:" + JSON.stringify(error)
+      );
 
       res.status(StatusCodes.BAD_REQUEST);
       return res.json({
@@ -210,7 +238,7 @@ class LoginController {
         error: errorMessage,
       });
     }
-  }
+  };
 }
 
 export default LoginController;

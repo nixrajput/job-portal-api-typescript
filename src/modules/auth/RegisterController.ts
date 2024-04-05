@@ -1,3 +1,4 @@
+import type ProfileService from "services/ProfileService";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
@@ -9,16 +10,20 @@ import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
 import { UserType, type IUser } from "../../interfaces/entities/user";
 import Logger from "../../logger";
 import Otp from "../../models/Otp";
-import RecruiterProfile from "../../models/RecruiterProfile";
 import User from "../../models/User";
 import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
 
 class RegisterController {
   private readonly _userSvc: UserService;
+  private readonly _profileSvc: ProfileService;
 
-  constructor(readonly jobSvc: UserService) {
+  constructor(
+    readonly jobSvc: UserService,
+    readonly profileSvc: ProfileService
+  ) {
     this._userSvc = jobSvc;
+    this._profileSvc = profileSvc;
   }
 
   /**
@@ -179,7 +184,7 @@ class RegisterController {
       const _email = email?.toLowerCase().trim();
       const _phone = phone?.trim();
 
-      const isEmailExists = await User.findOne({ email: _email });
+      const isEmailExists = await this._userSvc.checkIsEmailExistsExc(_email);
       if (isEmailExists) {
         res.status(StatusCodes.BAD_REQUEST);
         return res.json({
@@ -189,7 +194,7 @@ class RegisterController {
         });
       }
 
-      const isPhoneExists = await User.findOne({ phone: _phone });
+      const isPhoneExists = await this._userSvc.checkIsPhoneExistsExc(_phone);
       if (isPhoneExists) {
         res.status(StatusCodes.BAD_REQUEST);
         return res.json({
@@ -231,7 +236,10 @@ class RegisterController {
       const errorMessage =
         error?.message || error || StringValues.SOMETHING_WENT_WRONG;
 
-      Logger.error(errorMessage);
+      Logger.error(
+        "RegisterController: sendRegisterOtp",
+        "errorInfo:" + JSON.stringify(error)
+      );
 
       res.status(StatusCodes.BAD_REQUEST);
       return res.json({
@@ -455,37 +463,37 @@ class RegisterController {
         );
       }
 
+      const _currentDateTime = new Date(Date.now());
+
+      // Create User
       const newUserData: IUser = {
         userType: userType,
         name: _name,
+        nameChangedAt: _currentDateTime,
         email: _email,
+        isEmailVerified: true,
+        emailChangedAt: _currentDateTime,
         countryCode: countryCode?.trim(),
         phone: _phone,
+        phoneChangedAt: _currentDateTime,
         whatsAppNo: whatsAppNo?.trim(),
-        password: password?.trim(),
       };
 
-      const newUser = await this._userSvc.createExc(newUserData);
+      const newUser = await this._userSvc.createUserExc(newUserData);
 
-      // Create recuiter profile
+      // Set Password
+      await newUser.setPassword(password.trim());
+
+      // Create Recuiter Profile
       if (userType === UserType.Recruiter) {
-        const recruiterProfile = await RecruiterProfile.create({
+        await this._profileSvc.createRecruiterExc({
           userId: newUser._id,
           companyName: companyName.trim(),
           designation: designation.trim(),
         });
-
-        if (!recruiterProfile) {
-          return next(
-            new ApiError(
-              StringValues.SOMETHING_WENT_WRONG,
-              StatusCodes.BAD_REQUEST
-            )
-          );
-        }
       }
 
-      // Sending Email
+      // Send Welcome Email
       // const htmlMessage = await EmailTemplateHelper.getOtpEmail(_name);
 
       // if (htmlMessage) {
@@ -514,7 +522,10 @@ class RegisterController {
       const errorMessage =
         error?.message || error || StringValues.SOMETHING_WENT_WRONG;
 
-      Logger.error(errorMessage);
+      Logger.error(
+        "RegisterController: register",
+        "errorInfo:" + JSON.stringify(error)
+      );
 
       res.status(StatusCodes.BAD_REQUEST);
       return res.json({

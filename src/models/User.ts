@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import type { IAuthTokenModel } from "../interfaces/entities/authToken";
 import type { IUserModel } from "../interfaces/entities/user";
 import { UserStatus, UserType } from "../interfaces/entities/user";
@@ -77,24 +77,14 @@ const UserSchema = new Schema<IUserModel>(
 
     password: {
       type: String,
-      validate: [
-        {
-          validator: function (v: string) {
-            return v.length >= 8;
-          },
-          msg: "Password length should be greater than or equal to 8 characters",
-        },
-        {
-          validator: function (v: string) {
-            return v.length <= 32;
-          },
-          msg: "Password length should not be greater than 32 characters",
-        },
-      ],
     },
 
     passwordChangedAt: {
       type: Date,
+    },
+
+    salt: {
+      type: String,
     },
 
     accountStatus: {
@@ -111,18 +101,18 @@ const UserSchema = new Schema<IUserModel>(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-/**
- * @name pre-save
- * @description Update user's password if modified
- * @returns Promise<void>
- */
-UserSchema.pre("save", async function (next): Promise<void> {
-  if (!this.isModified("password")) {
-    next();
-  }
+// /**
+//  * @name pre-save
+//  * @description Update user's password if modified
+//  * @returns Promise<void>
+//  */
+// UserSchema.pre("save", async function (next): Promise<void> {
+//   if (!this.isModified("password")) {
+//     next();
+//   }
 
-  this.password = await bcrypt.hash(this.password, 16);
-});
+//   await this.setPassword(this.password);
+// });
 
 /**
  * @name generateToken
@@ -210,13 +200,39 @@ UserSchema.methods.isProfileComplete = async function (): Promise<boolean> {
 
 /**
  * @name matchPassword
+ * @description Set user's password
+ * @returns Promise<boolean>
+ */
+UserSchema.methods.setPassword = async function (
+  password: string
+): Promise<void> {
+  const _currentDateTime = new Date(Date.now());
+
+  // Creating a unique salt for a particular user
+  this.salt = crypto.randomBytes(16).toString("hex");
+
+  // Hashing user's salt and password with 1000 iterations,
+  this.password = crypto
+    .pbkdf2Sync(password, this.salt, 1000, 64, `sha512`)
+    .toString(`hex`);
+  this.passwordChangedAt = _currentDateTime;
+
+  await this.save();
+};
+
+/**
+ * @name matchPassword
  * @description Check if user's password is correct
  * @returns Promise<boolean>
  */
 UserSchema.methods.matchPassword = async function (
-  userPassword: string
+  password: string
 ): Promise<boolean> {
-  return await bcrypt.compare(userPassword, this.password);
+  var hash = crypto
+    .pbkdf2Sync(password, this.salt, 1000, 64, `sha512`)
+    .toString(`hex`);
+
+  return this.password === hash;
 };
 
 UserSchema.index({ name: "text", email: "text" });

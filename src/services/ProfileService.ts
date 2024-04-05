@@ -15,11 +15,7 @@ class ProfileService {
     _profile: IRecruiterProfile
   ): Promise<IRecruiterProfileModel> => {
     try {
-      const recruiterProfile = await RecruiterProfile.create({
-        userId: _profile.userId,
-        companyName: _profile.companyName.trim(),
-        designation: _profile.designation.trim(),
-      });
+      const recruiterProfile = await RecruiterProfile.create(_profile);
 
       return Promise.resolve(recruiterProfile);
     } catch (error) {
