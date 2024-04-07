@@ -3,7 +3,7 @@ import type { IJobSeekerProfileModel } from "../interfaces/entities/jobSeekerPro
 
 const JobSeekerProfileSchema = new Schema<IJobSeekerProfileModel>(
   {
-    user: {
+    userId: {
       type: Types.ObjectId,
       required: true,
     },
@@ -24,38 +24,35 @@ const JobSeekerProfileSchema = new Schema<IJobSeekerProfileModel>(
     },
 
     address: {
-      type: String,
-      maxlength: 100,
-    },
+      addressLine1: {
+        type: String,
+        maxlength: 100,
+      },
 
-    city: {
-      type: String,
-      maxlength: 100,
-    },
+      addressLine2: {
+        type: String,
+        maxlength: 100,
+      },
 
-    district: {
-      type: String,
-      maxlength: 100,
-    },
+      city: {
+        type: String,
+        maxlength: 100,
+      },
 
-    state: {
-      type: String,
-      maxlength: 100,
-    },
+      state: {
+        type: String,
+        maxlength: 100,
+      },
 
-    pincode: {
-      type: String,
-      maxlength: 10,
-    },
+      country: {
+        type: String,
+        maxlength: 100,
+      },
 
-    whatsAppNo: {
-      type: String,
-      maxlength: 20,
-    },
-
-    sendNotificationOnWhatsApp: {
-      type: Boolean,
-      default: false,
+      pincode: {
+        type: String,
+        maxlength: 10,
+      },
     },
 
     highestEducationalQualification: {

@@ -13,6 +13,7 @@ import Otp from "../../models/Otp";
 import User from "../../models/User";
 import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
+import { RequestType } from "enums";
 
 class RegisterController {
   private readonly _userSvc: UserService;
@@ -39,7 +40,7 @@ class RegisterController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== "POST") {
+    if (req.method !== RequestType.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -262,7 +263,7 @@ class RegisterController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== "POST") {
+    if (req.method !== RequestType.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );

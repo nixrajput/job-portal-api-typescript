@@ -1,3 +1,4 @@
+import type { IAddress } from "interfaces/core/address";
 import type { ObjectId, Document } from "mongoose";
 
 export interface IEducationalDetails {
@@ -11,25 +12,17 @@ export interface IEducationalDetails {
   marksheetDoc: string;
 }
 
-export interface IJobSeekerProfileProfile {
-  user: ObjectId;
+export interface IJobSeekerProfile {
+  userId: ObjectId;
   aadhar: string;
   gender: string;
   dob: string;
-  address: string;
-  city: string;
-  district: string;
-  state: string;
-  pincode: string;
-  whatsAppNo: string;
-  sendNotificationOnWhatsApp: boolean;
+  address: IAddress;
   highestEducationalQualification: string;
   educationalDetails: IEducationalDetails;
 }
 
-export interface IJobSeekerProfileModel
-  extends IJobSeekerProfileProfile,
-    Document {
+export interface IJobSeekerProfileModel extends IJobSeekerProfile, Document {
   appliedJobs: ObjectId[];
   appliedJobsCount: number;
   createdAt: Date;

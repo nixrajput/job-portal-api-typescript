@@ -1,3 +1,4 @@
+import { RequestType } from "enums";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
@@ -23,34 +24,34 @@ class JobController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== "POST") {
+    if (req.method !== RequestType.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
     }
 
-    const currentUser = req.currentUser;
-
-    if (currentUser.userType !== UserType.Recruiter) {
-      return next(
-        new ApiError(
-          StringValues.ACTION_NOT_PERMITTED,
-          StatusCodes.UNAUTHORIZED
-        )
-      );
-    }
-
-    const userProfile = await RecruiterProfile.findOne({
-      userId: currentUser._id,
-    });
-
-    if (!userProfile) {
-      return next(
-        new ApiError(StringValues.PROFILE_NOT_FOUND, StatusCodes.NOT_FOUND)
-      );
-    }
-
     try {
+      const currentUser = req.currentUser;
+
+      if (currentUser.userType !== UserType.Recruiter) {
+        return next(
+          new ApiError(
+            StringValues.ACTION_NOT_PERMITTED,
+            StatusCodes.UNAUTHORIZED
+          )
+        );
+      }
+
+      const userProfile = await RecruiterProfile.findOne({
+        userId: currentUser._id,
+      });
+
+      if (!userProfile) {
+        return next(
+          new ApiError(StringValues.PROFILE_NOT_FOUND, StatusCodes.NOT_FOUND)
+        );
+      }
+
       const data: IJobBodyData = req.body;
 
       if (!data) {
@@ -334,7 +335,7 @@ class JobController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== "GET") {
+    if (req.method !== RequestType.GET) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
