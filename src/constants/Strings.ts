@@ -120,10 +120,15 @@ class StringValues {
   public static INVALID_PHONE_FORMAT = "Phone number format is invalid";
   public static COMPANY_NAME_REQUIRED = "Company name is required";
   public static DESIGNATION_REQUIRED = "Designation is required";
+  public static OLD_PASSWORD_REQUIRED = "Old password is required";
   public static PASSWORD_REQUIRED = "Password is required";
   public static CONFIRM_PASSWORD_REQUIRED = "Confirm password is required";
   public static PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
   public static PHONE_ALREADY_USED = "Phone number is already used";
+  public static OLD_PASSWORD_MIN_LENGTH_ERROR =
+    "Old password length should be greater than or equal to 8 characters";
+  public static OLD_PASSWORD_MAX_LENGTH_ERROR =
+    "Old password length should not be greater than 32 characters";
   public static PASSWORD_MIN_LENGTH_ERROR =
     "Password length should be greater than or equal to 8 characters";
   public static PASSWORD_MAX_LENGTH_ERROR =
@@ -135,6 +140,7 @@ class StringValues {
   public static PHONE_LENGTH_ERROR =
     "Phone number length should be equal to 10 characters";
   public static INCORRECT_PASSWORD = "Password is incorrect";
+  public static INCORRECT_OLD_PASSWORD = "Old password is incorrect";
 }
 
 export default StringValues;

@@ -185,7 +185,7 @@ class PasswordController {
 
   /**
    * @name resetPassword
-   * @description Perform register user action.
+   * @description Perform reset password action.
    * @param req IRequest
    * @param res IResponse
    * @param next INext
@@ -355,6 +355,7 @@ class PasswordController {
       otpObj.isUsed = true;
       await otpObj.save();
 
+      // Generate New Token
       await currentUser.getToken(true);
 
       res.status(StatusCodes.CREATED);
@@ -368,6 +369,181 @@ class PasswordController {
 
       Logger.error(
         "PasswordController: resetPassword",
+        "errorInfo:" + JSON.stringify(error)
+      );
+
+      res.status(StatusCodes.BAD_REQUEST);
+      return res.json({
+        success: false,
+        error: errorMessage,
+      });
+    }
+  };
+
+  /**
+   * @name changePassword
+   * @description Perform change password action.
+   * @param req IRequest
+   * @param res IResponse
+   * @param next INext
+   * @returns Promise<any>
+   */
+  public changePassword = async (
+    req: IRequest,
+    res: IResponse,
+    next: INext
+  ): Promise<any> => {
+    if (req.method !== RequestType.POST) {
+      return next(
+        new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
+      );
+    }
+
+    try {
+      const {
+        oldPassword,
+        password,
+        confirmPassword,
+      }: {
+        oldPassword: string;
+        password: string;
+        confirmPassword: string;
+      } = req.body;
+
+      if (!oldPassword) {
+        return next(
+          new ApiError(
+            StringValues.OLD_PASSWORD_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (oldPassword.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.OLD_PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (oldPassword.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.OLD_PASSWORD_MAX_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!password) {
+        return next(
+          new ApiError(StringValues.PASSWORD_REQUIRED, StatusCodes.BAD_REQUEST)
+        );
+      }
+
+      if (password.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (password.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORD_MAX_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (!confirmPassword) {
+        return next(
+          new ApiError(
+            StringValues.CONFIRM_PASSWORD_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (confirmPassword.length < 8) {
+        return next(
+          new ApiError(
+            StringValues.CONFIRM_PASSWORD_MIN_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (confirmPassword.length > 32) {
+        return next(
+          new ApiError(
+            StringValues.CONFIRM_PASSWORD_MAX_LENGTH_ERROR,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (password.trim() !== confirmPassword.trim()) {
+        return next(
+          new ApiError(
+            StringValues.PASSWORDS_DO_NOT_MATCH,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      const currentUser = req.currentUser;
+
+      if (!currentUser) {
+        return next(
+          new ApiError(StringValues.USER_NOT_FOUND, StatusCodes.NOT_FOUND)
+        );
+      }
+
+      // Validating Old Password
+      const isPasswordMatched = await currentUser.matchPassword(oldPassword);
+      if (!isPasswordMatched) {
+        return next(
+          new ApiError(
+            StringValues.INCORRECT_OLD_PASSWORD,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      // Set Password
+      await currentUser.setPassword(password.trim());
+
+      // Send Welcome Email
+      // const htmlMessage = await EmailTemplateHelper.getOtpEmail(_name);
+
+      // if (htmlMessage) {
+      //   await MailServiceHelper.sendEmail({
+      //     to: _email,
+      //     subject: "Welcome To NixLab Jobs",
+      //     htmlContent: htmlMessage,
+      //   });
+      // }
+
+      // Generate New Token
+      await currentUser.getToken(true);
+
+      res.status(StatusCodes.CREATED);
+      return res.json({
+        success: true,
+        message: StringValues.SUCCESS,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || error || StringValues.SOMETHING_WENT_WRONG;
+
+      Logger.error(
+        "PasswordController: changePassword",
         "errorInfo:" + JSON.stringify(error)
       );
 
