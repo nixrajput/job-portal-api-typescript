@@ -1,4 +1,4 @@
-import type ProfileService from "services/ProfileService";
+import type ProfileService from "../../services/ProfileService";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
@@ -13,17 +13,17 @@ import Otp from "../../models/Otp";
 import User from "../../models/User";
 import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
-import { RequestType } from "enums";
+import { RequestType } from "../../enums";
 
 class RegisterController {
   private readonly _userSvc: UserService;
   private readonly _profileSvc: ProfileService;
 
   constructor(
-    readonly jobSvc: UserService,
+    readonly userSvc: UserService,
     readonly profileSvc: ProfileService
   ) {
-    this._userSvc = jobSvc;
+    this._userSvc = userSvc;
     this._profileSvc = profileSvc;
   }
 

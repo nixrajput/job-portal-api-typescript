@@ -1,4 +1,4 @@
-import type UserService from "services/UserService";
+import type UserService from "../../services/UserService";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
@@ -13,8 +13,8 @@ import Validators from "../../utils/validator";
 class LoginController {
   private readonly _userSvc: UserService;
 
-  constructor(readonly jobSvc: UserService) {
-    this._userSvc = jobSvc;
+  constructor(readonly userSvc: UserService) {
+    this._userSvc = userSvc;
   }
 
   /**

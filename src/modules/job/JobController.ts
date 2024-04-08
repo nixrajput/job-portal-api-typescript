@@ -1,4 +1,4 @@
-import { RequestType } from "enums";
+import { RequestType } from "../../enums";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";

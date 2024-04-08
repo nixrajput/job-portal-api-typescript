@@ -161,7 +161,16 @@ UserSchema.methods.generateToken = async function (): Promise<IAuthTokenModel> {
  * @description Get user's auth token
  * @returns Promise<IAuthTokenModel>
  */
-UserSchema.methods.getToken = async function (): Promise<IAuthTokenModel> {
+UserSchema.methods.getToken = async function (
+  refreshToken = false
+): Promise<IAuthTokenModel> {
+  if (refreshToken) {
+    await AuthToken.deleteOne({ userId: this._id });
+
+    const newToken = await this.generateToken();
+    return newToken;
+  }
+
   const authToken = await AuthToken.findOne({ userId: this._id });
 
   if (!authToken) {

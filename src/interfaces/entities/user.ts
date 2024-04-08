@@ -44,7 +44,7 @@ export interface IUserModel extends IUser, Document {
 
   // Methods
   generateToken(): Promise<IAuthTokenModel>;
-  getToken(): Promise<IAuthTokenModel>;
+  getToken(refreshToken?: boolean): Promise<IAuthTokenModel>;
   isProfileComplete(): Promise<boolean>;
   setPassword(password: string): Promise<void>;
   matchPassword(password: string): Promise<boolean>;

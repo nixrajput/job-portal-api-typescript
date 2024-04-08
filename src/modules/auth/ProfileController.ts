@@ -2,15 +2,15 @@
  * Define Profile Controller Class
  */
 
-import { RequestType } from "enums";
-import type { IRequest, IResponse, INext } from "interfaces/core/express";
-import ApiError from "exceptions/ApiError";
-import StringValues from "constants/Strings";
-import StatusCodes from "constants/StatusCodes";
-import Logger from "logger";
-import { UserType } from "interfaces/entities/user";
-import RecruiterProfile from "models/RecruiterProfile";
-import JobSeekerProfile from "models/JobSeekerProfile";
+import { RequestType } from "../../enums";
+import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
+import ApiError from "../../exceptions/ApiError";
+import StringValues from "../../constants/Strings";
+import StatusCodes from "../../constants/StatusCodes";
+import Logger from "../../logger";
+import { UserType } from "../../interfaces/entities/user";
+import RecruiterProfile from "../../models/RecruiterProfile";
+import JobSeekerProfile from "../../models/JobSeekerProfile";
 
 class ProfileController {
   //   private readonly _userSvc: UserService;
