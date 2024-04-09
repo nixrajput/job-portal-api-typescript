@@ -2,13 +2,12 @@
  * Define Profile Controller Class
  */
 
-import { RequestType } from "../../enums";
+import { EHttpMethod, EUserType } from "../../enums";
 import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
 import ApiError from "../../exceptions/ApiError";
 import StringValues from "../../constants/Strings";
 import StatusCodes from "../../constants/StatusCodes";
 import Logger from "../../logger";
-import { UserType } from "../../interfaces/entities/user";
 import RecruiterProfile from "../../models/RecruiterProfile";
 import JobSeekerProfile from "../../models/JobSeekerProfile";
 
@@ -37,7 +36,7 @@ class ProfileController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.GET) {
+    if (req.method !== EHttpMethod.GET) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -46,7 +45,7 @@ class ProfileController {
     try {
       const currentUser = req.currentUser;
 
-      if (currentUser.userType === UserType.Recruiter) {
+      if (currentUser.userType === EUserType.Recruiter) {
         const userProfile = await RecruiterProfile.findOne({
           userId: currentUser._id,
         });

@@ -1,11 +1,10 @@
-import { RequestType } from "../../enums";
+import { EHttpMethod, EUserType } from "../../enums";
 import StatusCodes from "../../constants/StatusCodes";
 import StringValues from "../../constants/Strings";
 import ApiError from "../../exceptions/ApiError";
 import type { IJobBodyData } from "../../interfaces/core/bodyData";
 import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
 import type { IJob } from "../../interfaces/entities/job";
-import { UserType } from "../../interfaces/entities/user";
 import Logger from "../../logger";
 import RecruiterProfile from "../../models/RecruiterProfile";
 import JobService from "../../services/JobService";
@@ -24,7 +23,7 @@ class JobController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.POST) {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -33,7 +32,7 @@ class JobController {
     try {
       const currentUser = req.currentUser;
 
-      if (currentUser.userType !== UserType.Recruiter) {
+      if (currentUser.userType !== EUserType.Recruiter) {
         return next(
           new ApiError(
             StringValues.ACTION_NOT_PERMITTED,
@@ -335,7 +334,7 @@ class JobController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.GET) {
+    if (req.method !== EHttpMethod.GET) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );

@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import type { IJobModel } from "../interfaces/entities/job";
-import { JobType } from "../interfaces/entities/job";
+import { EJobType } from "../enums";
 
 const JobSchema = new Schema<IJobModel>(
   {
@@ -148,7 +148,7 @@ const JobSchema = new Schema<IJobModel>(
     jobType: {
       type: String,
       required: true,
-      enum: JobType,
+      enum: EJobType,
     },
 
     location: {

@@ -7,13 +7,13 @@ import EmailTemplateHelper from "../../helpers/MailTemplateHelper";
 import OtpServiceHelper from "../../helpers/OtpServiceHelper";
 import type { IRegisterBodyData } from "../../interfaces/core/bodyData";
 import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
-import { UserType, type IUser } from "../../interfaces/entities/user";
+import type { IUser } from "../../interfaces/entities/user";
 import Logger from "../../logger";
 import Otp from "../../models/Otp";
 import User from "../../models/User";
 import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
-import { RequestType } from "../../enums";
+import { EHttpMethod, EUserType } from "../../enums";
 
 class RegisterController {
   private readonly _userSvc: UserService;
@@ -40,7 +40,7 @@ class RegisterController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.POST) {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -101,7 +101,7 @@ class RegisterController {
       }
 
       // If user type is recruiter
-      if (userType === UserType.Recruiter) {
+      if (userType === EUserType.Recruiter) {
         if (!companyName) {
           return next(
             new ApiError(
@@ -263,7 +263,7 @@ class RegisterController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.POST) {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -327,7 +327,7 @@ class RegisterController {
       }
 
       // If user type is recruiter
-      if (userType === UserType.Recruiter) {
+      if (userType === EUserType.Recruiter) {
         if (!companyName) {
           return next(
             new ApiError(
@@ -486,7 +486,7 @@ class RegisterController {
       await newUser.setPassword(password.trim());
 
       // Create Recuiter Profile
-      if (userType === UserType.Recruiter) {
+      if (userType === EUserType.Recruiter) {
         await this._profileSvc.createRecruiterExc({
           userId: newUser._id,
           companyName: companyName.trim(),

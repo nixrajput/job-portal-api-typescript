@@ -1,4 +1,4 @@
-import type { IAddress } from "interfaces/core/address";
+import type { IAddress } from "../../interfaces/core/address";
 import type { ObjectId, Document } from "mongoose";
 
 export interface IEducationalDetails {
@@ -14,12 +14,12 @@ export interface IEducationalDetails {
 
 export interface IJobSeekerProfile {
   userId: ObjectId;
-  aadhar: string;
   gender: string;
   dob: string;
   address: IAddress;
   highestEducationalQualification: string;
   educationalDetails: IEducationalDetails;
+  aadhar?: string;
 }
 
 export interface IJobSeekerProfileModel extends IJobSeekerProfile, Document {

@@ -8,11 +8,6 @@ const JobSeekerProfileSchema = new Schema<IJobSeekerProfileModel>(
       required: true,
     },
 
-    aadhar: {
-      type: String,
-      maxlength: 20,
-    },
-
     gender: {
       type: String,
       maxlength: 20,
@@ -79,6 +74,11 @@ const JobSeekerProfileSchema = new Schema<IJobSeekerProfileModel>(
         marksheetDoc: { type: String, maxlength: 100 },
       },
     ],
+
+    aadhar: {
+      type: String,
+      maxlength: 20,
+    },
 
     appliedJobs: [Types.ObjectId],
 

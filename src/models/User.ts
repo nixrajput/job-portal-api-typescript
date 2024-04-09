@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import type { IAuthTokenModel } from "../interfaces/entities/authToken";
 import type { IUserModel } from "../interfaces/entities/user";
-import { UserStatus, UserType } from "../interfaces/entities/user";
+import { EUserStatus, EUserType } from "../enums";
 import LocalConfig from "../config/LocalConfig";
 import StringValues from "../constants/Strings";
 import Logger from "../logger";
@@ -89,13 +89,13 @@ const UserSchema = new Schema<IUserModel>(
 
     accountStatus: {
       type: String,
-      enum: UserStatus,
-      default: UserStatus.active,
+      enum: EUserStatus,
+      default: EUserStatus.active,
     },
 
     userType: {
       type: String,
-      enum: UserType,
+      enum: EUserType,
     },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }

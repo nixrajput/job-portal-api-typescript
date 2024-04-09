@@ -9,6 +9,7 @@ import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
 import Logger from "../../logger";
 import User from "../../models/User";
 import Validators from "../../utils/validator";
+import { EHttpMethod } from "../../enums";
 
 class LoginController {
   private readonly _userSvc: UserService;
@@ -30,7 +31,7 @@ class LoginController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== "POST") {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -122,7 +123,7 @@ class LoginController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== "POST") {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );

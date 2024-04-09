@@ -1,11 +1,5 @@
 import type { ObjectId, Document } from "mongoose";
 
-export enum JobType {
-  Remote = "remote",
-  InOffice = "in-office",
-  Hybrid = "hybrid",
-}
-
 export interface IJobLocation {
   city: string;
   state: string;

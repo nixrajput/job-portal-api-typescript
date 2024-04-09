@@ -2,7 +2,7 @@
  * Define Password Controller Class
  */
 
-import { RequestType } from "../../enums";
+import { EHttpMethod } from "../../enums";
 import type { IRequest, IResponse, INext } from "../../interfaces/core/express";
 import ApiError from "../../exceptions/ApiError";
 import StringValues from "../../constants/Strings";
@@ -35,7 +35,7 @@ class PasswordController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.POST) {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -196,7 +196,7 @@ class PasswordController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.POST) {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );
@@ -393,7 +393,7 @@ class PasswordController {
     res: IResponse,
     next: INext
   ): Promise<any> => {
-    if (req.method !== RequestType.POST) {
+    if (req.method !== EHttpMethod.POST) {
       return next(
         new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
       );

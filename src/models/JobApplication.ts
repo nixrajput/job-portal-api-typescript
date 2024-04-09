@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import type { IJobApplicationModel } from "../interfaces/entities/jobApplication";
-import { JobStatus } from "../interfaces/entities/jobApplication";
+import { EJobStatus } from "../enums";
 
 const JobAppLicationSchema = new Schema<IJobApplicationModel>(
   {
@@ -21,8 +21,8 @@ const JobAppLicationSchema = new Schema<IJobApplicationModel>(
 
     status: {
       type: String,
-      enum: JobStatus,
-      default: JobStatus.Applied,
+      enum: EJobStatus,
+      default: EJobStatus.Applied,
       required: true,
     },
 
