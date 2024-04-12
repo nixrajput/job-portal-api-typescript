@@ -1,11 +1,11 @@
 {
   "name": "job-portal-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "This repository contains the source code for a job portal API built using Node.js Express, and TypeScript.",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "dotenvx run --env-file=.env.local -- bun --watch src/index.ts",
+    "dev": "dotenvx run --env-file=.env.local -- bun --hot src/index.ts",
     "start": ".bun/bun src/index.ts",
     "lint": "eslint . --ext .ts",
     "push": "git add -A && git commit -m \"initial commit\" && git push origin master"

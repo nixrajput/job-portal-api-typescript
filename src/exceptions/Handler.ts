@@ -21,11 +21,14 @@ class ExceptionHandler {
     _express.use("*", (req, res) => {
       const url = req.originalUrl;
 
-      // if (url === "/") {
-      //   return res.sendFile(
-      //     path.resolve(__dirname, "../../public/pages/index.html")
-      //   );
-      // }
+      if (url === "/") {
+        return res.status(200).json({
+          success: true,
+          server: "online",
+          timestamp: new Date(),
+          message: "Server is up and running...",
+        });
+      }
 
       const ip =
         req.headers["x-forwarded-for"] ||

@@ -1,19 +1,14 @@
 import App from "./app";
 import Logger from "./logger";
 
-/**
- * Define Main Class
- */
-class Main {
+const main = (): void => {
   // Run the Server
-  public static _runApp(): void {
-    Logger.info("App :: Starting...");
+  Logger.info("App :: Starting...");
 
-    App._init();
-  }
-}
+  App._init();
+};
 
 /**
  * Booting MainApp
  */
-Main._runApp();
+main();
