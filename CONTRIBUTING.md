@@ -1,6 +1,6 @@
-# Contributing to the Portfolio Website
+# Contributing to the Job Portal API
 
-We appreciate your interest in contributing to the Portfolio Website built with Next.js and Sass. By contributing, you help make this project better and more accessible for others. Please take a moment to review the following guidelines to ensure a smooth and collaborative development process.
+We appreciate your interest in contributing to the Job Portal API with Node.js, Express, and TypeScript. By contributing, you help make this project better and more accessible for others. Please take a moment to review the following guidelines to ensure a smooth and collaborative development process.
 
 ## Code of Conduct
 
